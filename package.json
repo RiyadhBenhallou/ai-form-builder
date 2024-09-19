@@ -11,15 +11,21 @@
   },
   "dependencies": {
     "@neondatabase/serverless": "^0.9.5",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
     "drizzle-orm": "^0.33.0",
+    "lucide-react": "^0.441.0",
     "next": "14.2.12",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "tailwind-merge": "^2.5.2",
+    "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "daisyui": "^4.12.10",
     "drizzle-kit": "^0.24.2",
     "eslint": "^8",
     "eslint-config-next": "14.2.12",
