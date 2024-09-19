@@ -1,7 +1,8 @@
-import { integer, pgTable, serial, text } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 
-export const test = pgTable("test", {
-  id: serial("id").primaryKey(),
-  name: text("name").notNull(),
-  age: integer("age").notNull(),
+export const forms = pgTable("form", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  jsonForm: text("json_form").notNull(),
+  userId: text("user_id").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
 });
