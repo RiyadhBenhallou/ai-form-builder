@@ -39,6 +39,7 @@ CustomDialogProps) {
       const result = await chatSession.sendMessage(fullPrompt);
       const jsonForm = result.response.text();
       const form = await createForm(jsonForm, fullPrompt);
+      console.log(form);
       setDescription("");
       setOpen(false);
       router.push(`/dashboard/edit-form/${form.id}`);

@@ -12,9 +12,9 @@ export function cn(...inputs: ClassValue[]) {
 export function prompt(description: string) {
   return `Based on the description given below, return a JSON object with the following structure:
   {
-    "formTitle": string,
-    "formSubheading": string,
-    "formFields": [
+    "title": string,
+    "subheading": string,
+    "fields": [
       {
         "name": string,
         "label": string,
