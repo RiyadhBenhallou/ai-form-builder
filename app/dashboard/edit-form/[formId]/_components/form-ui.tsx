@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,15 +12,16 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { FormStructure } from "@/db/schema";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
-import EditField from "./edit-field";
 import { Loader2 } from "lucide-react";
+import { useState } from "react";
 import DeleteField from "./delete-field";
+import EditField from "./edit-field";
 
 export default function FormUI({
   form,
   handleFieldUpdate,
   handleFieldDelete,
+  theme,
 }: {
   form: FormStructure | undefined;
   handleFieldUpdate: (
@@ -29,6 +29,7 @@ export default function FormUI({
     updates: { label: string; placeholder: string }
   ) => void;
   handleFieldDelete: (name: string) => void;
+  theme: string;
 }) {
   const [formData, setFormData] = useState<Record<string, string | string[]>>(
     {}
@@ -53,9 +54,12 @@ export default function FormUI({
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md">
+    <div
+      className="max-w-2xl mx-auto p-6 rounded-lg shadow-md"
+      data-theme={theme}
+    >
       <h1 className="text-2xl font-bold mb-2">{form.title}</h1>
-      <p className="text-gray-600 mb-6">{form.subheading}</p>
+      <p className="mb-6">{form.subheading}</p>
       <form onSubmit={handleSubmit} className="space-y-6">
         {form.fields.map((field) => (
           <div key={field.name} className="space-y-2">
@@ -166,9 +170,9 @@ export default function FormUI({
             </div>
           </div>
         ))}
-        <Button type="submit" className="w-full">
+        <button type="submit" className="w-full btn btn-primary">
           Submit
-        </Button>
+        </button>
       </form>
     </div>
   );

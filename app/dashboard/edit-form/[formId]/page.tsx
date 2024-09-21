@@ -7,6 +7,7 @@ import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import FormUI from "./_components/form-ui";
 import { FormStructure } from "@/db/schema";
+import StylesController from "./_components/styles-controller";
 
 export default function EditFormPage({
   params: { formId },
@@ -16,6 +17,7 @@ export default function EditFormPage({
   const router = useRouter();
   const [form, setForm] = useState<FormStructure | undefined>();
   const isFirstRender = useRef(true);
+  const [theme, setTheme] = useState("light");
 
   useEffect(() => {
     const fetchForm = async () => {
@@ -85,7 +87,7 @@ export default function EditFormPage({
       </Button>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="col-span-1 bg-white p-4 rounded-md shadow-md">
-          <h1 className="">controller</h1>
+          <StylesController selectTheme={(value) => setTheme(value)} />
         </div>
         <div className="col-span-2 bg-white p-4 rounded-md shadow-md min-h-[80vh]">
           <h1 className="">
@@ -93,6 +95,7 @@ export default function EditFormPage({
               form={form}
               handleFieldUpdate={handleFieldUpdate}
               handleFieldDelete={handleFieldDelete}
+              theme={theme}
             />
           </h1>
         </div>
