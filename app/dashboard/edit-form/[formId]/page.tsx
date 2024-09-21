@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { getForm } from "./actions";
+import { useEffect, useRef, useState } from "react";
+import { getForm, updateForm } from "./actions";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -15,6 +15,8 @@ export default function EditFormPage({
 }) {
   const router = useRouter();
   const [form, setForm] = useState<FormStructure | undefined>();
+  const isFirstRender = useRef(true);
+
   useEffect(() => {
     const fetchForm = async () => {
       const form = await getForm(formId);
@@ -25,6 +27,53 @@ export default function EditFormPage({
     };
     fetchForm();
   }, [formId]);
+
+  useEffect(() => {
+    const updateFormInDatabase = async (updatedForm: FormStructure) => {
+      try {
+        await updateForm(formId, JSON.stringify(updatedForm));
+        console.log("Form updated in database");
+      } catch (error) {
+        console.error("Error updating form in database:", error);
+      }
+    };
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    if (!form) return;
+    updateFormInDatabase(form!);
+  }, [form, formId]);
+
+  const handleFieldUpdate = async (
+    name: string,
+    updates: { label: string; placeholder: string }
+  ) => {
+    setForm((prevForm) => {
+      if (!prevForm) return prevForm;
+      const updatedForm = {
+        ...prevForm,
+        fields: prevForm.fields.map((field) =>
+          field.name === name ? { ...field, ...updates } : field
+        ),
+      };
+      // updateFormInDatabase(updatedForm);
+      return updatedForm;
+    });
+  };
+
+  const handleFieldDelete = (name: string) => {
+    setForm((prevForm) => {
+      if (!prevForm) return prevForm;
+      const updatedForm = {
+        ...prevForm,
+        fields: prevForm.fields.filter((f) => name !== f.name),
+      };
+      // updateFormInDatabase(updatedForm);
+      return updatedForm;
+    });
+  };
+
   return (
     <div className="">
       <Button
@@ -40,7 +89,11 @@ export default function EditFormPage({
         </div>
         <div className="col-span-2 bg-white p-4 rounded-md shadow-md min-h-[80vh]">
           <h1 className="">
-            <FormUI form={form} />
+            <FormUI
+              form={form}
+              handleFieldUpdate={handleFieldUpdate}
+              handleFieldDelete={handleFieldDelete}
+            />
           </h1>
         </div>
       </div>
