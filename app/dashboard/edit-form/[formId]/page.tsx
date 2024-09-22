@@ -3,12 +3,13 @@
 import { Button } from "@/components/ui/button";
 import { FormField, FormType } from "@/db/schema";
 import { cn } from "@/lib/utils";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ArrowUpLeftFromSquare, Share2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import FormUI from "./_components/form-ui";
 import StylesController from "./_components/styles-controller";
 import { getForm, updateBackground, updateForm, updateTheme } from "./actions";
+import Link from "next/link";
 
 export default function EditFormPage({
   params: { formId },
@@ -17,21 +18,20 @@ export default function EditFormPage({
 }) {
   const router = useRouter();
   const [form, setForm] = useState<FormType | undefined>();
+  const [isLoading, startTransition] = useTransition();
   const isFirstRender = useRef(true);
   const [theme, setTheme] = useState<string | null>();
   const [backgroundColor, setBackgroundColor] = useState<string | null>();
 
   useEffect(() => {
-    const fetchForm = async () => {
+    startTransition(async () => {
       const fetchedForm = await getForm(formId);
-      console.log(fetchedForm);
       if (fetchedForm) {
         setForm(fetchedForm);
         setTheme(fetchedForm.theme);
         setBackgroundColor(fetchedForm.backgroundColor ?? "bg-white");
       }
-    };
-    fetchForm();
+    });
   }, [formId]);
 
   useEffect(() => {
@@ -88,13 +88,39 @@ export default function EditFormPage({
 
   return (
     <div>
-      <Button
-        className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 mb-2 group"
-        size={"sm"}
-        onClick={() => router.back()}
-      >
-        <ArrowLeft className="group-hover:-translate-x-1 transition-all" /> Back
-      </Button>
+      <div className="flex items-center justify-between mb-4">
+        <Button
+          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 group"
+          size={"sm"}
+          onClick={() => router.back()}
+        >
+          <ArrowLeft className="group-hover:-translate-x-1 transition-all" />{" "}
+          Back
+        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            variant={"outline"}
+            className="bg-white text-black group flex items-center gap-2"
+            size={"sm"}
+            // onClick={() => router.push(`/forms/${formId}`)}
+            asChild
+          >
+            <Link href={`/forms/${formId}`} target="_blank">
+              <ArrowUpLeftFromSquare className="w-4 h-4" />
+              Preview
+            </Link>
+          </Button>
+          <Button
+            variant={"outline"}
+            className="bg-white text-black flex items-center gap-2"
+            size={"sm"}
+          >
+            <Share2 className="w-4 h-4" />
+            Share
+          </Button>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="col-span-1 bg-white p-4 rounded-md shadow-md">
           <StylesController
@@ -118,6 +144,7 @@ export default function EditFormPage({
             {form && (
               <FormUI
                 form={JSON.parse(form.jsonForm)}
+                isLoading={isLoading}
                 handleFieldUpdate={handleFieldUpdate}
                 handleFieldDelete={handleFieldDelete}
                 theme={theme}

@@ -22,6 +22,7 @@ export default function FormUI({
   handleFieldUpdate,
   handleFieldDelete,
   theme,
+  isLoading,
 }: {
   form: FormStructure | undefined;
   handleFieldUpdate: (
@@ -30,18 +31,16 @@ export default function FormUI({
   ) => void;
   handleFieldDelete: (name: string) => void;
   theme: string | null | undefined;
+  isLoading: boolean;
 }) {
   const [formData, setFormData] = useState<Record<string, string | string[]>>(
     {}
   );
 
-  if (!form) {
-    return (
-      <div className="w-full min-h-0 h-full flex items-center justify-center">
-        <Loader2 className="animate-spin" />
-      </div>
-    );
+  if (isLoading) {
+    return <Loader2 className="animate-spin text-black" />;
   }
+  if (!form) return <div>No form found</div>;
 
   const handleInputChange = (name: string, value: string | string[]) => {
     setFormData((prev) => ({ ...prev, [name]: value }));

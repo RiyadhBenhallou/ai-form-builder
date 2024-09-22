@@ -1,21 +1,19 @@
 "use client";
-import { useState } from "react";
-import Link from "next/link";
-import {
-  Menu,
-  X,
-  Home,
-  BarChart2,
-  Settings,
-  HelpCircle,
-  PlusCircle,
-  FileText,
-  MessageSquare,
-  LayoutDashboard,
-} from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { UserButton } from "@clerk/nextjs";
 import { cn } from "@/lib/utils";
+import { UserButton } from "@clerk/nextjs";
+import {
+  BarChart2,
+  FileText,
+  Home,
+  LayoutDashboard,
+  Menu,
+  MessageSquare,
+  PlusCircle,
+  X,
+} from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
 
