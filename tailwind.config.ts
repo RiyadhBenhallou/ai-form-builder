@@ -1,8 +1,14 @@
 import type { Config } from "tailwindcss";
 import tailwindcssAnimate from "tailwindcss-animate";
 import daisyui from "daisyui";
+import { gradientOptions } from "./lib/utils";
+
+const usedColors = gradientOptions.flatMap((option) => {
+  return option.tailwindClass.split(" ");
+});
 
 const config: Config = {
+  safelist: usedColors.map((c) => `text-${c}-600`),
   darkMode: ["class"],
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",

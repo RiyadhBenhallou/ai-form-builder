@@ -29,7 +29,7 @@ export default function FormUI({
     updates: { label: string; placeholder: string }
   ) => void;
   handleFieldDelete: (name: string) => void;
-  theme: string;
+  theme: string | null | undefined;
 }) {
   const [formData, setFormData] = useState<Record<string, string | string[]>>(
     {}
@@ -53,15 +53,17 @@ export default function FormUI({
     // Here you would typically send the data to your backend
   };
 
+  console.log(form);
+
   return (
     <div
       className="max-w-2xl mx-auto p-6 rounded-lg shadow-md"
-      data-theme={theme}
+      data-theme={theme ?? "light"}
     >
       <h1 className="text-2xl font-bold mb-2">{form.title}</h1>
       <p className="mb-6">{form.subheading}</p>
       <form onSubmit={handleSubmit} className="space-y-6">
-        {form.fields.map((field) => (
+        {form.fields?.map((field) => (
           <div key={field.name} className="space-y-2">
             <Label
               htmlFor={field.name}
@@ -111,6 +113,7 @@ export default function FormUI({
                       <RadioGroupItem
                         value={option.value}
                         id={`${field.name}-${option.value}`}
+                        className="radio-primary"
                       />
                       <Label htmlFor={`${field.name}-${option.value}`}>
                         {option.label}
@@ -128,6 +131,7 @@ export default function FormUI({
                     >
                       <Checkbox
                         id={`${field.name}-${option.value}`}
+                        className="checkbox-primary"
                         onCheckedChange={(checked) => {
                           const currentValues =
                             (formData[field.name] as string[]) || [];

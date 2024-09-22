@@ -1,13 +1,14 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { getForm, updateForm } from "./actions";
 import { Button } from "@/components/ui/button";
+import { FormField, FormType } from "@/db/schema";
+import { cn } from "@/lib/utils";
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 import FormUI from "./_components/form-ui";
-import { FormStructure } from "@/db/schema";
 import StylesController from "./_components/styles-controller";
+import { getForm, updateBackground, updateForm, updateTheme } from "./actions";
 
 export default function EditFormPage({
   params: { formId },
@@ -15,25 +16,28 @@ export default function EditFormPage({
   params: { formId: string };
 }) {
   const router = useRouter();
-  const [form, setForm] = useState<FormStructure | undefined>();
+  const [form, setForm] = useState<FormType | undefined>();
   const isFirstRender = useRef(true);
-  const [theme, setTheme] = useState("light");
+  const [theme, setTheme] = useState<string | null>();
+  const [backgroundColor, setBackgroundColor] = useState<string | null>();
 
   useEffect(() => {
     const fetchForm = async () => {
-      const form = await getForm(formId);
-      console.log(form);
-      if (form) {
-        setForm(JSON.parse(form.jsonForm));
+      const fetchedForm = await getForm(formId);
+      console.log(fetchedForm);
+      if (fetchedForm) {
+        setForm(fetchedForm);
+        setTheme(fetchedForm.theme);
+        setBackgroundColor(fetchedForm.backgroundColor ?? "bg-white");
       }
     };
     fetchForm();
   }, [formId]);
 
   useEffect(() => {
-    const updateFormInDatabase = async (updatedForm: FormStructure) => {
+    const updateFormInDatabase = async (updatedForm: FormType) => {
       try {
-        await updateForm(formId, JSON.stringify(updatedForm));
+        await updateForm(formId, updatedForm);
         console.log("Form updated in database");
       } catch (error) {
         console.error("Error updating form in database:", error);
@@ -44,7 +48,7 @@ export default function EditFormPage({
       return;
     }
     if (!form) return;
-    updateFormInDatabase(form!);
+    updateFormInDatabase(form);
   }, [form, formId]);
 
   const handleFieldUpdate = async (
@@ -53,31 +57,37 @@ export default function EditFormPage({
   ) => {
     setForm((prevForm) => {
       if (!prevForm) return prevForm;
-      const updatedForm = {
-        ...prevForm,
-        fields: prevForm.fields.map((field) =>
+      const parsedJsonForm = JSON.parse(prevForm.jsonForm);
+      const updatedJsonForm = {
+        ...parsedJsonForm,
+        fields: parsedJsonForm.fields.map((field: FormField) =>
           field.name === name ? { ...field, ...updates } : field
         ),
       };
-      // updateFormInDatabase(updatedForm);
-      return updatedForm;
+      return {
+        ...prevForm,
+        jsonForm: JSON.stringify(updatedJsonForm),
+      };
     });
   };
 
   const handleFieldDelete = (name: string) => {
     setForm((prevForm) => {
       if (!prevForm) return prevForm;
-      const updatedForm = {
-        ...prevForm,
-        fields: prevForm.fields.filter((f) => name !== f.name),
+      const parsedJsonForm = JSON.parse(prevForm.jsonForm);
+      const updatedJsonForm = {
+        ...parsedJsonForm,
+        fields: parsedJsonForm.fields.filter((f: FormField) => name !== f.name),
       };
-      // updateFormInDatabase(updatedForm);
-      return updatedForm;
+      return {
+        ...prevForm,
+        jsonForm: JSON.stringify(updatedJsonForm),
+      };
     });
   };
 
   return (
-    <div className="">
+    <div>
       <Button
         className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 mb-2 group"
         size={"sm"}
@@ -87,16 +97,32 @@ export default function EditFormPage({
       </Button>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="col-span-1 bg-white p-4 rounded-md shadow-md">
-          <StylesController selectTheme={(value) => setTheme(value)} />
+          <StylesController
+            selectTheme={async (value) => {
+              setTheme(value);
+              await updateTheme(formId, value);
+            }}
+            changeBackground={async (value) => {
+              setBackgroundColor(value);
+              await updateBackground(formId, value);
+            }}
+          />
         </div>
-        <div className="col-span-2 bg-white p-4 rounded-md shadow-md min-h-[80vh]">
+        <div
+          className={cn(
+            "col-span-2 bg-white py-10 px-20 rounded-md shadow-md min-h-[80vh]",
+            backgroundColor
+          )}
+        >
           <h1 className="">
-            <FormUI
-              form={form}
-              handleFieldUpdate={handleFieldUpdate}
-              handleFieldDelete={handleFieldDelete}
-              theme={theme}
-            />
+            {form && (
+              <FormUI
+                form={JSON.parse(form.jsonForm)}
+                handleFieldUpdate={handleFieldUpdate}
+                handleFieldDelete={handleFieldDelete}
+                theme={theme}
+              />
+            )}
           </h1>
         </div>
       </div>
