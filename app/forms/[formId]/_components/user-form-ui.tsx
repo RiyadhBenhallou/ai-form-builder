@@ -11,9 +11,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { FormStructure, FormType } from "@/db/schema";
+import { FormType } from "@/db/schema";
+import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
-import React, { useState } from "react";
+import { Loader2 } from "lucide-react";
+import React, { useState, useTransition } from "react";
+import { saveResponse } from "../actions";
 
 interface UserFormUIProps {
   form: FormType;
@@ -22,7 +25,12 @@ interface UserFormUIProps {
 export default function UserFormUI({ form }: UserFormUIProps) {
   const jsonSchema = JSON.parse(form?.jsonForm ?? "{}");
 
-  const [formData, setFormData] = useState<FormStructure>(jsonSchema);
+  const [formData, setFormData] = useState<Record<string, string | string[]>>(
+    {}
+  );
+  const [isLoading, startTransition] = useTransition();
+  const { toast } = useToast();
+  const [formKey, setFormKey] = useState(0);
 
   if (!form) return <div>No form found</div>;
 
@@ -30,10 +38,29 @@ export default function UserFormUI({ form }: UserFormUIProps) {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Form submitted:", formData);
-    // Here you would typically send the data to your backend
+    startTransition(async () => {
+      try {
+        await saveResponse(formData, form.id);
+        setFormData({});
+        setFormKey((prevKey) => prevKey + 1); // Increment the key to force re-render
+        toast({
+          variant: "default",
+          className: "bg-white",
+          title: "Form submitted successfully",
+          description: "Form creators will be notified of your response.",
+        });
+      } catch (e) {
+        console.log(e);
+        toast({
+          variant: "destructive",
+          title: "Something went wrong",
+          description: "Please try again later.",
+        });
+      }
+    });
   };
 
   return (
@@ -44,13 +71,13 @@ export default function UserFormUI({ form }: UserFormUIProps) {
       )}
     >
       <div
-        className="max-w-[600px] p-6 m-6 rounded-lg shadow-md"
+        className="max-w-[650px] p-6 m-6 rounded-lg shadow-md"
         data-theme={form.theme}
       >
-        <h1 className="text-2xl font-bold mb-2">{formData.title}</h1>
-        <p className="mb-6">{formData.subheading}</p>
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {formData.fields?.map((field) => (
+        <h1 className="text-2xl font-bold mb-2">{jsonSchema.title}</h1>
+        <p className="mb-6">{jsonSchema.subheading}</p>
+        <form key={formKey} onSubmit={handleSubmit} className="space-y-6">
+          {jsonSchema.fields?.map((field) => (
             <div key={field.name} className="space-y-2">
               <Label
                 htmlFor={field.name}
@@ -157,7 +184,12 @@ export default function UserFormUI({ form }: UserFormUIProps) {
               </div>
             </div>
           ))}
-          <button type="submit" className="w-full btn btn-primary">
+          <button
+            type="submit"
+            className="w-full btn btn-primary"
+            disabled={isLoading}
+          >
+            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Submit
           </button>
         </form>

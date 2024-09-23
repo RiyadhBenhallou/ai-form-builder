@@ -1,3 +1,4 @@
+import { relations } from "drizzle-orm";
 import { pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 
 export const forms = pgTable("form", {
@@ -9,6 +10,27 @@ export const forms = pgTable("form", {
   userId: text("user_id").notNull(),
   createdAt: timestamp("created_at").defaultNow(),
 });
+
+export const responses = pgTable("response", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  jsonResponse: text("json_response").notNull(),
+  userId: text("user_id").notNull(),
+  formId: uuid("form_id")
+    .notNull()
+    .references(() => forms.id),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const formsRelations = relations(forms, ({ many }) => ({
+  responses: many(responses),
+}));
+
+export const responsesRelations = relations(responses, ({ one }) => ({
+  form: one(forms, {
+    fields: [responses.formId],
+    references: [forms.id],
+  }),
+}));
 
 export type FormField = {
   name: string;
