@@ -3,6 +3,7 @@
 import { db } from "@/db";
 import { responses } from "@/db/schema";
 import { auth } from "@clerk/nextjs/server";
+import { revalidatePath } from "next/cache";
 
 export async function saveResponse(
   formData: Record<string, string | string[]>,
@@ -17,4 +18,5 @@ export async function saveResponse(
     userId,
     jsonResponse: JSON.stringify(formData),
   });
+  revalidatePath("/dashboard/responses");
 }

@@ -51,3 +51,4 @@ export type FormStructure = {
 };
 
 export type FormType = typeof forms.$inferSelect;
+export type ResponseType = typeof responses.$inferSelect;

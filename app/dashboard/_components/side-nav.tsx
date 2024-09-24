@@ -23,9 +23,9 @@ export default function SideNav() {
   const [progress, setProgress] = useState(2);
 
   const navItems = [
-    { name: "My Forms", href: "/forms", icon: FileText },
-    { name: "Responses", href: "/responses", icon: MessageSquare },
-    { name: "Analytics", href: "/analytics", icon: BarChart2 },
+    { name: "My Forms", href: "/dashboard", icon: FileText },
+    { name: "Responses", href: "/dashboard/responses", icon: MessageSquare },
+    { name: "Analytics", href: "/dashboard/analytics", icon: BarChart2 },
   ];
 
   useEffect(() => {
@@ -47,7 +47,7 @@ export default function SideNav() {
   return (
     <nav
       className={cn(
-        "fixed md:sticky top-16 left-0 z-30 h-[calc(100vh-4rem)] bg-white shadow-md transition-all duration-200 ease-in-out overflow-y-auto",
+        "hidden md:block md:sticky top-16 left-0 z-30 h-[calc(100vh-4rem)] bg-white shadow-md transition-all duration-200 ease-in-out overflow-y-auto",
         isCollapsed ? "w-20 hover:w-64" : "w-64"
       )}
       onMouseEnter={() => setIsCollapsed(false)}

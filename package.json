@@ -27,13 +27,15 @@
     "clsx": "^2.1.1",
     "cmdk": "1.0.0",
     "drizzle-orm": "^0.33.0",
+    "file-saver": "^2.0.5",
     "lucide-react": "^0.441.0",
     "next": "14.2.12",
     "react": "^18",
     "react-dom": "^18",
     "react-web-share": "^2.0.2",
     "tailwind-merge": "^2.5.2",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@types/node": "^20",
