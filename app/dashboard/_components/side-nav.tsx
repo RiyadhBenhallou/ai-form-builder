@@ -16,6 +16,7 @@ import { Progress } from "@/components/ui/progress";
 
 export default function SideNav() {
   const [isCollapsed, setIsCollapsed] = useState(true);
+  const [isMounted, setIsMounted] = useState(false);
   const pathname = usePathname();
 
   // Mock progress state (replace with actual state management in your app)
@@ -28,6 +29,7 @@ export default function SideNav() {
   ];
 
   useEffect(() => {
+    setIsMounted(true);
     const handleResize = () => {
       if (window.innerWidth < 768) {
         setIsCollapsed(true);
@@ -38,8 +40,12 @@ export default function SideNav() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  if (!isMounted) {
+    return <div className="w-20 md:w-64" />; // Return a placeholder with the same width
+  }
+
   return (
-    <div
+    <nav
       className={cn(
         "fixed md:sticky top-16 left-0 z-30 h-[calc(100vh-4rem)] bg-white shadow-md transition-all duration-200 ease-in-out overflow-y-auto",
         isCollapsed ? "w-20 hover:w-64" : "w-64"
@@ -49,7 +55,6 @@ export default function SideNav() {
     >
       <div className="flex h-full flex-col justify-between">
         <div className="flex flex-col space-y-2 p-4">
-          {/* Create Form Button */}
           <Button
             className="w-full bg-blue-600 text-white hover:bg-blue-700 flex justify-start"
             asChild
@@ -72,7 +77,6 @@ export default function SideNav() {
             </NavItem>
           ))}
 
-          {/* Progress Bar */}
           <div className={cn("mb-4", isCollapsed && "hidden")}>
             <div className="flex justify-between text-sm text-gray-600 mb-1">
               <span>Progress</span>
@@ -93,7 +97,7 @@ export default function SideNav() {
           </Button>
         </div>
       </div>
-    </div>
+    </nav>
   );
 }
 

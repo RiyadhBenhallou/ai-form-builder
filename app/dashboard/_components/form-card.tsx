@@ -10,6 +10,7 @@ import { FormStructure, FormType } from "@/db/schema";
 import { ArrowUpLeftFromSquare, Edit, Share2 } from "lucide-react";
 import Link from "next/link";
 import DeleteForm from "./delete-form";
+import WebShare from "./web-share";
 
 export default function FormCard({ form }: { form: FormType }) {
   const f = JSON.parse(form.jsonForm) as FormStructure;
@@ -17,14 +18,14 @@ export default function FormCard({ form }: { form: FormType }) {
   return (
     <Card key={form.id} className="flex flex-col justify-between relative">
       <CardHeader>
-        <CardTitle>{f.title}</CardTitle>
+        <CardTitle className="text-lg">{f.title}</CardTitle>
         <CardDescription>{f.subheading}</CardDescription>
       </CardHeader>
       {/* <CardContent>
                 <p>Card Content</p>
               </CardContent> */}
       <CardFooter className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 mr-2">
           <Button
             variant={"outline"}
             className="bg-white text-black group flex items-center gap-2"
@@ -37,14 +38,20 @@ export default function FormCard({ form }: { form: FormType }) {
               Preview
             </Link>
           </Button>
-          <Button
-            variant={"outline"}
-            className="bg-white text-black flex items-center gap-2"
-            size={"sm"}
+          <WebShare
+            text={f.subheading}
+            title={f.title}
+            url={`/forms/${form.id}`}
           >
-            <Share2 className="w-4 h-4" />
-            Share
-          </Button>
+            <Button
+              variant={"outline"}
+              className="bg-white text-black flex items-center gap-2"
+              size={"sm"}
+            >
+              <Share2 className="w-4 h-4" />
+              Share
+            </Button>
+          </WebShare>
         </div>
         <Button
           variant={"outline"}

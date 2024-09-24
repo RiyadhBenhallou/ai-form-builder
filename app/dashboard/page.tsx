@@ -7,7 +7,7 @@ import { eq } from "drizzle-orm";
 import { PlusCircle } from "lucide-react";
 import { unstable_noStore } from "next/cache";
 import CreateFormDialog from "./_components/create-form-dialog";
-import FormCard from "./_components/forms-card";
+import FormCard from "./_components/form-card";
 import { forms } from "@/db/schema";
 
 export default async function Page() {

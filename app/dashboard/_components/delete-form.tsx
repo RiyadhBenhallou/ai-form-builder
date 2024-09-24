@@ -28,11 +28,11 @@ export default function DeleteForm({ formId }) {
       <AlertDialogTrigger asChild>
         <Button
           type="submit"
-          variant={"destructive"}
+          variant={"ghost"}
           className="text-white absolute top-2 right-2 size-8"
           size={"icon"}
         >
-          <Trash className="w-4 h-4" />
+          <Trash className="w-4 h-4 text-red-500" />
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent className="bg-white text-black">

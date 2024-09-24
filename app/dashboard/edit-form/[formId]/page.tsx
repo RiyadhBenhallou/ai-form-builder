@@ -10,6 +10,7 @@ import FormUI from "./_components/form-ui";
 import StylesController from "./_components/styles-controller";
 import { getForm, updateBackground, updateForm, updateTheme } from "./actions";
 import Link from "next/link";
+import WebShare from "../../_components/web-share";
 
 export default function EditFormPage({
   params: { formId },
@@ -70,6 +71,7 @@ export default function EditFormPage({
       };
     });
   };
+  const jsonForm = form?.jsonForm ? JSON.parse(form.jsonForm) : null;
 
   const handleFieldDelete = (name: string) => {
     setForm((prevForm) => {
@@ -110,14 +112,20 @@ export default function EditFormPage({
               Preview
             </Link>
           </Button>
-          <Button
-            variant={"outline"}
-            className="bg-white text-black flex items-center gap-2"
-            size={"sm"}
+          <WebShare
+            text={jsonForm?.subheading}
+            title={jsonForm?.title}
+            url={`/forms/${form?.id}`}
           >
-            <Share2 className="w-4 h-4" />
-            Share
-          </Button>
+            <Button
+              variant={"outline"}
+              className="bg-white text-black flex items-center gap-2"
+              size={"sm"}
+            >
+              <Share2 className="w-4 h-4" />
+              Share
+            </Button>
+          </WebShare>
         </div>
       </div>
 
