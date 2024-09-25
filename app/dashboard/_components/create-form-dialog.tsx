@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useContext, useState, useTransition } from "react";
 import {
   Dialog,
   DialogContent,
@@ -16,6 +16,7 @@ import { chatSession } from "@/lib/ai-model";
 import { Loader2 } from "lucide-react";
 import { createForm } from "../actions";
 import { useRouter } from "next/navigation";
+import { ProgressContext } from "../progress-provider";
 
 // used prompt : based on description given below return in json format the following information: formTitle, formSubheading, formFields which is an array of name, label and placeholder objects\ndescription: [description]
 
@@ -27,11 +28,13 @@ interface CustomDialogProps {
 export default function CreateFormDialog({
   children,
 }: //   onSubmit,
+//   onSubmit,
 CustomDialogProps) {
   const [description, setDescription] = useState("");
   const [open, setOpen] = useState(false);
   const [loading, startTransition] = useTransition();
   const router = useRouter();
+  const { setProgress } = useContext(ProgressContext)!;
 
   const handleSubmit = async () => {
     startTransition(async () => {
@@ -41,6 +44,7 @@ CustomDialogProps) {
       const form = await createForm(jsonForm, fullPrompt);
       console.log(form);
       setDescription("");
+      setProgress((prevProgress) => (prevProgress ?? 0) + 1);
       setOpen(false);
       router.push(`/dashboard/edit-form/${form.id}`);
     });

@@ -33,3 +33,13 @@ export async function deleteForm(formId: string) {
     .where(and(eq(forms.id, formId), eq(forms.userId, userId)));
   revalidatePath("/dashboard");
 }
+
+export async function getUserForms() {
+  const { userId } = await auth();
+  if (!userId) {
+    throw new Error("User not authenticated");
+  }
+  return await db.query.forms.findMany({
+    where: eq(forms.userId, userId),
+  });
+}

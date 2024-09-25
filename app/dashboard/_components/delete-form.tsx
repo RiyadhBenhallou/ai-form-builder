@@ -12,16 +12,19 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Loader2, Trash } from "lucide-react";
-import { useTransition } from "react";
+import { useContext, useTransition } from "react";
 import { deleteForm } from "../actions";
+import { ProgressContext } from "../progress-provider";
 
 export default function DeleteForm({ formId }) {
   const [isLoading, startTransition] = useTransition();
+  const { setProgress } = useContext(ProgressContext)!;
 
   const handleDeletion = async () => {
     startTransition(async () => {
       await deleteForm(formId);
     });
+    setProgress((prevProgress) => (prevProgress ?? 0) - 1);
   };
   return (
     <AlertDialog>

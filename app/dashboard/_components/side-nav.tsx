@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -13,14 +13,24 @@ import {
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { getUserForms } from "../actions";
+import { ProgressContext } from "../progress-provider";
 
 export default function SideNav() {
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [isMounted, setIsMounted] = useState(false);
   const pathname = usePathname();
+  const { progress, setProgress } = useContext(ProgressContext)!;
+
+  useEffect(() => {
+    async function fetchForms() {
+      const forms = await getUserForms();
+      setProgress(forms.length);
+    }
+    fetchForms();
+  }, [setProgress]);
 
   // Mock progress state (replace with actual state management in your app)
-  const [progress, setProgress] = useState(2);
 
   const navItems = [
     { name: "My Forms", href: "/dashboard", icon: FileText },
@@ -78,11 +88,20 @@ export default function SideNav() {
           ))}
 
           <div className={cn("mb-4", isCollapsed && "hidden")}>
-            <div className="flex justify-between text-sm text-gray-600 mb-1">
-              <span>Progress</span>
-              <span>{progress}/3 steps</span>
+            <Progress
+              value={((progress ?? 0) / 5) * 100}
+              max={3}
+              className="w-full"
+            />
+            <div className="flex justify-center text-sm text-gray-600 mb-1">
+              {progress == null ? (
+                <span>Loading...</span>
+              ) : (
+                <>
+                  <span className="font-bold">{progress}</span>/5 forms created
+                </>
+              )}
             </div>
-            <Progress value={(progress / 3) * 100} className="w-full" />
           </div>
         </div>
         <div className="p-4">

@@ -11,13 +11,9 @@ import { FormStructure, FormType, ResponseType } from "@/db/schema";
 import { Download } from "lucide-react";
 import { write, utils } from "xlsx"; // Install SheetJS: npm install xlsx
 
-export default function ResponseCard({
-  form,
-  responses,
-}: {
-  form: FormType;
-  responses: ResponseType[];
-}) {
+type Form = FormType & { responses: ResponseType[] };
+
+export default function ResponseCard({ form }: { form: Form }) {
   const f = JSON.parse(form.jsonForm) as FormStructure;
   //   const handleExport = () => {
   //     const parsedResponses: any[] = [];
@@ -30,7 +26,7 @@ export default function ResponseCard({
 
   const handleExport = () => {
     // Parse responses
-    const parsedResponses = responses.map((response) =>
+    const parsedResponses = form?.responses?.map((response) =>
       JSON.parse(response.jsonResponse)
     );
 
@@ -71,14 +67,14 @@ export default function ResponseCard({
               </CardContent> */}
       <CardFooter className="flex items-center justify-between">
         <p className="text-sm text-muted-foreground">
-          <span className="font-bold">{responses.length}</span> Responses
+          <span className="font-bold">{form?.responses?.length}</span> Responses
         </p>
         <Button
           variant={"outline"}
           className="bg-blue-600 hover:bg-blue-700 text-white hover:text-white"
           size={"sm"}
           onClick={handleExport}
-          disabled={responses.length === 0}
+          disabled={form?.responses?.length === 0}
         >
           <Download className="w-4 h-4 mr-2" />
           Export
