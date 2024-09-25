@@ -131,16 +131,19 @@ export default function EditFormPage({
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="col-span-1 bg-white p-4 rounded-md shadow-md">
-          <StylesController
-            selectTheme={async (value) => {
-              setTheme(value);
-              await updateTheme(formId, value);
-            }}
-            changeBackground={async (value) => {
-              setBackgroundColor(value);
-              await updateBackground(formId, value);
-            }}
-          />
+          {form && (
+            <StylesController
+              selectTheme={async (value) => {
+                setTheme(value);
+                await updateTheme(formId, value);
+              }}
+              changeBackground={async (value) => {
+                setBackgroundColor(value);
+                await updateBackground(formId, value);
+              }}
+              form={form}
+            />
+          )}
         </div>
         <div
           className={cn(

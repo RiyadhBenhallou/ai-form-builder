@@ -67,3 +67,17 @@ export async function updateBackground(formId: string, newBackground: string) {
   revalidatePath(`/dashboard/edit-form/${formId}`);
   return form;
 }
+
+export async function authenticateSubmission(
+  formId: string,
+  authenticate: boolean
+) {
+  const { userId } = await auth();
+  if (!userId) {
+    throw new Error("Unauthorized");
+  }
+  await db
+    .update(forms)
+    .set({ auth: !authenticate })
+    .where(and(eq(forms.id, formId), eq(forms.userId, userId)));
+}

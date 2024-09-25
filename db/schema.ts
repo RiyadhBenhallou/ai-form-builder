@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm";
-import { pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { boolean, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 
 export const forms = pgTable("form", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -9,6 +9,7 @@ export const forms = pgTable("form", {
   backgroundColor: text("background_color"),
   userId: text("user_id").notNull(),
   createdAt: timestamp("created_at").defaultNow(),
+  auth: boolean("auth").default(false),
 });
 
 export const responses = pgTable("response", {

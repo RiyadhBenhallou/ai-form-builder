@@ -1,19 +1,26 @@
 "use client";
 
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+import { FormType } from "@/db/schema";
 import { themes } from "@/lib/utils";
 import { ChevronDownIcon } from "lucide-react";
 import { useState } from "react";
+import { authenticateSubmission } from "../actions";
 
 export default function StylesController({
   selectTheme,
   changeBackground,
+  form,
 }: {
   selectTheme: (value: string) => void;
   changeBackground: (value: string) => void;
+  form: FormType;
 }) {
+  console.log(form);
   const [theme, setTheme] = useState("light");
   const [isOpen, setIsOpen] = useState(false);
-
+  console.log(form?.auth);
   const gradientOptions = [
     {
       name: "Sunset",
@@ -144,6 +151,15 @@ export default function StylesController({
             ))}
           </div>
         </div>
+      </div>
+      <div className="flex gap-2">
+        <Checkbox
+          defaultChecked={form.auth!}
+          onCheckedChange={async () => {
+            await authenticateSubmission(form.id, form.auth!);
+          }}
+        />
+        <Label>Sign in before submission</Label>
       </div>
     </div>
   );

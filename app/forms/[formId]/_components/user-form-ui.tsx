@@ -17,6 +17,7 @@ import { cn } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 import React, { useState, useTransition } from "react";
 import { saveResponse } from "../actions";
+import { useUser } from "@clerk/nextjs";
 
 interface UserFormUIProps {
   form: FormType;
@@ -24,6 +25,7 @@ interface UserFormUIProps {
 
 export default function UserFormUI({ form }: UserFormUIProps) {
   const jsonSchema = JSON.parse(form?.jsonForm ?? "{}");
+  const { user } = useUser();
 
   const [formData, setFormData] = useState<Record<string, string | string[]>>(
     {}
@@ -43,6 +45,14 @@ export default function UserFormUI({ form }: UserFormUIProps) {
     console.log("Form submitted:", formData);
     startTransition(async () => {
       try {
+        if (!user && form.auth) {
+          toast({
+            variant: "destructive",
+            title: "Submission Failed!",
+            description: "You should be authenticated to submit this form.",
+          });
+          return;
+        }
         await saveResponse(formData, form.id);
         setFormData({});
         setFormKey((prevKey) => prevKey + 1); // Increment the key to force re-render
