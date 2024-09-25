@@ -22,6 +22,24 @@ export default function SideNav() {
   const pathname = usePathname();
   const { progress, setProgress } = useContext(ProgressContext)!;
 
+  const [isHidden, setIsHidden] = useState(isCollapsed);
+
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+
+    if (!isCollapsed) {
+      timeoutId = setTimeout(() => {
+        setIsHidden(false);
+      }, 200);
+    } else {
+      setIsHidden(true);
+    }
+
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+    };
+  }, [isCollapsed]);
+
   useEffect(() => {
     async function fetchForms() {
       const forms = await getUserForms();
@@ -87,11 +105,17 @@ export default function SideNav() {
             </NavItem>
           ))}
 
-          <div className={cn("mb-4", isCollapsed && "hidden")}>
+          <div
+            className={cn(
+              "mb-4 transition-opacity duration-200 ease-in-out",
+              isHidden ? "opacity-0 invisible" : "opacity-100 visible"
+            )}
+          >
             <Progress
               value={((progress ?? 0) / 5) * 100}
+              color="#2563eb"
               max={3}
-              className="w-full"
+              className="w-full text-blue-600"
             />
             <div className="flex justify-center text-sm text-gray-600 mb-1">
               {progress == null ? (
@@ -109,7 +133,7 @@ export default function SideNav() {
             className="w-full bg-blue-600 text-white hover:bg-blue-700"
             asChild
           >
-            <Link href="/upgrade">
+            <Link href="/dashboard/upgrade">
               <Zap className={cn("h-4 w-4", !isCollapsed && "mr-2")} />
               <span className={cn(isCollapsed && "hidden")}>Upgrade</span>
             </Link>
