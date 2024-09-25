@@ -15,7 +15,7 @@ export const forms = pgTable("form", {
 export const responses = pgTable("response", {
   id: uuid("id").primaryKey().defaultRandom(),
   jsonResponse: text("json_response").notNull(),
-  userId: text("user_id").notNull(),
+  userEmail: text("user_email").notNull(),
   formId: uuid("form_id")
     .notNull()
     .references(() => forms.id),
