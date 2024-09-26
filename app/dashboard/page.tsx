@@ -1,14 +1,15 @@
 import { Button } from "@/components/ui/button";
 
+import EmptyState from "@/components/empty-state";
 import { db } from "@/db";
+import { forms } from "@/db/schema";
 import { cn } from "@/lib/utils";
 import { auth } from "@clerk/nextjs/server";
 import { eq } from "drizzle-orm";
-import { PlusCircle } from "lucide-react";
+import { LucidePersonStanding, PlusCircle } from "lucide-react";
 import { unstable_noStore } from "next/cache";
 import CreateFormDialog from "./_components/create-form-dialog";
 import FormCard from "./_components/form-card";
-import { forms } from "@/db/schema";
 
 export default async function Page() {
   unstable_noStore();
@@ -32,6 +33,15 @@ export default async function Page() {
         </CreateFormDialog>
       </div>
       {/* <FormsList forms={userForms} /> */}
+      <div className="flex justify-center items-center">
+        {userForms.length === 0 && (
+          <EmptyState
+            title="You have no forms yet!"
+            icon={LucidePersonStanding}
+            description="Try to create your first form now"
+          />
+        )}
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mt-8">
         {userForms.map((form) => {
           return <FormCard form={form} key={form.id} />;
