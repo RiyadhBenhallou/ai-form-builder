@@ -46,7 +46,7 @@ export default function Page() {
               </p>
             </div>
 
-            <SignUp />
+            <SignUp signInForceRedirectUrl={"/dashboard"} />
           </div>
         </main>
       </div>
