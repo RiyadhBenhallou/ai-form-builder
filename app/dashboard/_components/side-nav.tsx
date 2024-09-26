@@ -1,20 +1,15 @@
 "use client";
 
-import { useState, useEffect, useContext } from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import {
-  FileText,
-  MessageSquare,
-  BarChart2,
-  Zap,
-  PlusCircle,
-} from "lucide-react";
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { cn } from "@/lib/utils";
+import { FileText, MessageSquare, PlusCircle, Zap } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useContext, useEffect, useState } from "react";
 import { getUserForms } from "../actions";
 import { ProgressContext } from "../progress-provider";
+import CreateFormDialog from "./create-form-dialog";
 
 export default function SideNav() {
   const [isCollapsed, setIsCollapsed] = useState(true);
@@ -53,7 +48,6 @@ export default function SideNav() {
   const navItems = [
     { name: "My Forms", href: "/dashboard", icon: FileText },
     { name: "Responses", href: "/dashboard/responses", icon: MessageSquare },
-    { name: "Analytics", href: "/dashboard/analytics", icon: BarChart2 },
   ];
 
   useEffect(() => {
@@ -69,7 +63,7 @@ export default function SideNav() {
   }, []);
 
   if (!isMounted) {
-    return <div className="w-20 md:w-64" />; // Return a placeholder with the same width
+    return <div className="w-14 bg-gray-200 min-h-screen animate-pulse" />; // Return a placeholder with the same width
   }
 
   return (
@@ -83,16 +77,15 @@ export default function SideNav() {
     >
       <div className="flex h-full flex-col justify-between">
         <div className="flex flex-col space-y-2 p-4">
-          <Button
-            className="w-full bg-blue-600 text-white hover:bg-blue-700 flex justify-start"
-            asChild
-          >
-            <Link href="/create-form">
+          <CreateFormDialog>
+            <Button
+              className="w-full bg-blue-600 text-white hover:bg-blue-700 flex justify-start"
+              disabled={(progress ?? 5) >= 5}
+            >
               <PlusCircle className={cn("h-4 w-4", !isCollapsed && "mr-2")} />
               <span className={cn(isCollapsed && "hidden")}>Create Form</span>
-            </Link>
-          </Button>
-
+            </Button>
+          </CreateFormDialog>
           {navItems.map((item) => (
             <NavItem
               key={item.name}

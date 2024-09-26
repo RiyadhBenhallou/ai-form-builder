@@ -1,4 +1,5 @@
 "use client";
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,7 +13,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
-import { ReactNode, useTransition } from "react";
+import { ReactNode, useState, useTransition } from "react";
 
 export function DeletionAlert({
   children,
@@ -20,12 +21,26 @@ export function DeletionAlert({
   formId,
 }: {
   children: ReactNode;
-  action: (formId: string) => void;
+  action: (formId: string) => Promise<void>;
   formId: string;
 }) {
-  const [isLoading, startTransition] = useTransition();
+  const [isPending, startTransition] = useTransition();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleDelete = async () => {
+    startTransition(async () => {
+      try {
+        await action(formId);
+        setIsOpen(false);
+      } catch (error) {
+        console.error("Error deleting form:", error);
+        // Optionally, you can add error handling here
+      }
+    });
+  };
+
   return (
-    <AlertDialog>
+    <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogTrigger asChild>
         <Button variant="outline">{children}</Button>
       </AlertDialogTrigger>
@@ -33,23 +48,25 @@ export function DeletionAlert({
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
+            This action cannot be undone. This will permanently delete your form
+            and remove all associated data from our servers.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction
-            className="bg-red-500 hover:bg-red-600"
-            onClick={async () => {
-              startTransition(async () => {
-                await action(formId);
-              });
-            }}
-            disabled={isLoading}
+            className="bg-red-500 hover:bg-red-600 text-white"
+            onClick={handleDelete}
+            disabled={isPending}
           >
-            {isLoading && <Loader2 className="animate-spin mr-2 text-white" />}
-            Yes, Delete
+            {isPending ? (
+              <>
+                <Loader2 className="animate-spin mr-2" />
+                Deleting...
+              </>
+            ) : (
+              "Yes, Delete"
+            )}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

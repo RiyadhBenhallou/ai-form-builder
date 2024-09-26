@@ -5,13 +5,14 @@ import { forms, responses } from "@/db/schema";
 import { auth } from "@clerk/nextjs/server";
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 export async function createForm(jsonForm: string, prompt: string) {
   const { userId } = await auth();
   if (!userId) {
     throw new Error("User not authenticated");
   }
-  const form = await db
+  const createdForms = await db
     .insert(forms)
     .values({
       jsonForm,
@@ -19,7 +20,10 @@ export async function createForm(jsonForm: string, prompt: string) {
       prompt,
     })
     .returning();
-  return form[0];
+  if (!createdForms) {
+    throw new Error("Failed to create form");
+  }
+  redirect(`/dashboard/edit-form/${createdForms[0].id}`);
 }
 
 export async function deleteForm(formId: string) {

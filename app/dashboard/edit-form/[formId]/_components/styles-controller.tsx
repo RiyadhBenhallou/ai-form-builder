@@ -151,15 +151,15 @@ export default function StylesController({
             ))}
           </div>
         </div>
-      </div>
-      <div className="flex gap-2">
-        <Checkbox
-          defaultChecked={form.auth!}
-          onCheckedChange={async () => {
-            await authenticateSubmission(form.id, form.auth!);
-          }}
-        />
-        <Label>Sign in before submission</Label>
+        <div className="flex gap-2">
+          <Checkbox
+            defaultChecked={form.auth!}
+            onCheckedChange={async () => {
+              await authenticateSubmission(form.id, form.auth!);
+            }}
+          />
+          <Label>Sign in before submission</Label>
+        </div>
       </div>
     </div>
   );

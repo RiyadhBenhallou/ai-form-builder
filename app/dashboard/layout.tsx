@@ -39,7 +39,7 @@ export default function RootLayout({
               <Header />
               <div className="flex">
                 <SideNav />
-                <main className="flex-1 p-6 overflow-auto">{children}</main>
+                <div className="flex-1 p-6 overflow-auto">{children}</div>
               </div>
             </div>
           </SignedIn>

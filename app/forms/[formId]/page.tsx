@@ -23,7 +23,7 @@ export default async function FormPreviewPage({
         <div className="fixed bottom-5 left-5 text-white text-xs py-1 bg-gradient-to-tr from-black to-indigo-800 rounded-full border-2 border-blue-800">
           <div className="flex items-center gap-2 mx-4">
             <FormInput />
-            Make your own AI form
+            <span className="hidden lg:block">Make your own AI form</span>
           </div>
         </div>
       </Link>

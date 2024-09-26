@@ -1,21 +1,24 @@
 "use client";
 import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
-import { UserButton } from "@clerk/nextjs";
+import { UserButton, useSession } from "@clerk/nextjs";
 import {
-  BarChart2,
   FileText,
-  Home,
-  LayoutDashboard,
+  FormInput,
   Menu,
   MessageSquare,
   PlusCircle,
   X,
 } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { ProgressContext } from "../progress-provider";
+import CreateFormDialog from "./create-form-dialog";
 export default function Header() {
+  const { session } = useSession();
   const [isOpen, setIsOpen] = useState(false);
+  const { progress } = useContext(ProgressContext)!;
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -29,27 +32,16 @@ export default function Header() {
   if (!isMounted) {
     return null;
   }
-
   return (
     <nav className="bg-background shadow-sm" suppressHydrationWarning>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
             <Link href="/" className="flex-shrink-0 flex items-center">
-              <Home className="h-8 w-8 text-primary" />
-              <span className="ml-2 text-xl font-bold text-primary">
-                AppName
-              </span>
+              <FormInput className="h-8 w-8 text-blue-600" />
             </Link>
           </div>
-          <div className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-4">
-              <NavLink href="/dashboard">Dashboard</NavLink>
-              <NavLink href="/analytics">Analytics</NavLink>
-              <NavLink href="/settings">Settings</NavLink>
-              <NavLink href="/help">Help</NavLink>
-            </div>
-          </div>
+
           <div className="hidden md:block">
             <UserButton />
           </div>
@@ -68,38 +60,26 @@ export default function Header() {
       {isOpen && (
         <div className="md:hidden relative z-100">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            <Button
-              className="w-full bg-blue-600 text-white hover:bg-blue-700 flex justify-start"
-              asChild
-            >
-              <Link href="/create-form">
+            <CreateFormDialog>
+              <Button
+                className="w-full bg-blue-600 text-white hover:bg-blue-700 flex justify-start"
+                disabled={(progress ?? 5) >= 5}
+              >
                 <PlusCircle className={cn("h-5 w-5 mr-3")} />
                 Create Form
-              </Link>
-            </Button>
+              </Button>
+            </CreateFormDialog>
             <MobileNavLink
               href="/dashboard"
-              icon={<LayoutDashboard className="mr-3 h-5 w-5" />}
-            >
-              Dashboard
-            </MobileNavLink>
-            <MobileNavLink
-              href="/my-forms"
               icon={<FileText className="mr-3 h-5 w-5" />}
             >
               My Forms
             </MobileNavLink>
             <MobileNavLink
-              href="/responses"
+              href="/dashboard/responses"
               icon={<MessageSquare className="mr-3 h-5 w-5" />}
             >
               Responses
-            </MobileNavLink>
-            <MobileNavLink
-              href="/analytics"
-              icon={<BarChart2 className="mr-3 h-5 w-5" />}
-            >
-              Analytics
             </MobileNavLink>
           </div>
           <div className="pt-4 pb-3 border-t border-gray-200">
@@ -108,9 +88,31 @@ export default function Header() {
                 <UserButton />
               </div>
               <div className="ml-3">
-                <div className="text-base font-medium">John Doe</div>
+                <div className="text-base font-medium">
+                  {session?.user?.fullName}
+                </div>
                 <div className="text-sm font-medium text-muted-foreground">
-                  john@example.com
+                  {session?.user?.emailAddresses[0].emailAddress}
+                </div>
+              </div>
+            </div>
+            <div className={cn("flex justify-center container mx-auto")}>
+              <div className="w-1/2 mt-4">
+                <Progress
+                  value={((progress ?? 0) / 5) * 100}
+                  color="#2563eb"
+                  max={3}
+                  className="w-full text-blue-600"
+                />
+                <div className="flex justify-center text-sm text-gray-600 mb-1">
+                  {progress == null ? (
+                    <span>Loading...</span>
+                  ) : (
+                    <>
+                      <span className="font-bold">{progress}</span>/5 forms
+                      created
+                    </>
+                  )}
                 </div>
               </div>
             </div>
@@ -121,22 +123,22 @@ export default function Header() {
   );
 }
 
-function NavLink({
-  href,
-  children,
-}: {
-  href: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <Link
-      href={href}
-      className="text-muted-foreground hover:text-primary px-3 py-2 rounded-md text-sm font-medium"
-    >
-      {children}
-    </Link>
-  );
-}
+// function NavLink({
+//   href,
+//   children,
+// }: {
+//   href: string;
+//   children: React.ReactNode;
+// }) {
+//   return (
+//     <Link
+//       href={href}
+//       className="text-muted-foreground hover:text-primary px-3 py-2 rounded-md text-sm font-medium"
+//     >
+//       {children}
+//     </Link>
+//   );
+// }
 
 function MobileNavLink({
   href,
