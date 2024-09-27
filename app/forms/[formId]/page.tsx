@@ -20,9 +20,9 @@ export default async function FormPreviewPage({
     <div className="relative">
       <UserFormUI form={form} />
       <Link href={"/dashboard"} target="_blank">
-        <div className="fixed bottom-5 left-5 text-white text-xs py-1 bg-gradient-to-tr from-black to-indigo-800 rounded-full border-2 border-blue-800">
+        <div className="fixed left-3 bottom-3 md:bottom-5 md:left-5 text-white text-xs py-1 bg-gradient-to-tr from-black to-indigo-800 rounded-full border-2 border-blue-800">
           <div className="flex items-center gap-2 mx-4">
-            <FormInput />
+            <FormInput className="size-4 md:size-6" />
             <span className="hidden lg:block">Make your own AI form</span>
           </div>
         </div>

@@ -147,21 +147,19 @@ export default function EditFormPage({
         </div>
         <div
           className={cn(
-            "col-span-2 bg-white py-10 px-20 rounded-md shadow-md min-h-[80vh]",
+            "col-span-2 bg-white py-4 px-4 md:py-10 md:px-20 rounded-md shadow-md min-h-[80vh]",
             backgroundColor
           )}
         >
-          <h1 className="">
-            {form && (
-              <FormUI
-                form={JSON.parse(form.jsonForm)}
-                isLoading={isLoading}
-                handleFieldUpdate={handleFieldUpdate}
-                handleFieldDelete={handleFieldDelete}
-                theme={theme}
-              />
-            )}
-          </h1>
+          {form && (
+            <FormUI
+              form={JSON.parse(form.jsonForm)}
+              isLoading={isLoading}
+              handleFieldUpdate={handleFieldUpdate}
+              handleFieldDelete={handleFieldDelete}
+              theme={theme}
+            />
+          )}
         </div>
       </div>
     </div>

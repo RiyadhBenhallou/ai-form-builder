@@ -142,7 +142,7 @@ export default function StylesController({
             {gradientOptions.map((gradient) => (
               <button
                 key={gradient.name}
-                className={`w-16 h-8 mb-2 rounded-sm shadow-sm hover:shadow-md transition-shadow duration-300 hover:border ${gradient.tailwindClass}`}
+                className={`w-12 h-6 md:w-16 md:h-8 mb-2 rounded-sm shadow-sm hover:shadow-md transition-shadow duration-300 hover:border ${gradient.tailwindClass}`}
                 onClick={() => changeBackground(gradient.tailwindClass)}
                 aria-label={`Select ${gradient.name} gradient`}
               >
