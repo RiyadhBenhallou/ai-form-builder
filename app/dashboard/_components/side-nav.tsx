@@ -63,7 +63,9 @@ export default function SideNav() {
   }, []);
 
   if (!isMounted) {
-    return <div className="w-14 bg-gray-200 min-h-screen animate-pulse" />; // Return a placeholder with the same width
+    return (
+      <div className="hidden md:block w-14 bg-gray-200 min-h-screen animate-pulse" />
+    ); // Return a placeholder with the same width
   }
 
   return (

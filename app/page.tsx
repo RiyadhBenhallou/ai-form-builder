@@ -64,10 +64,10 @@ export default function LandingPage() {
               </Button>
             ) : !session ? (
               <>
-                <Button variant="outline">
+                <Button variant="outline" asChild>
                   <Link href="/sign-in">Log in</Link>
                 </Button>
-                <Button>
+                <Button asChild>
                   <Link href="/sign-up">Sign up</Link>
                 </Button>
               </>

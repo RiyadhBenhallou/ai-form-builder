@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
-import { UserButton, useSession } from "@clerk/nextjs";
+import { SignOutButton, UserButton, useSession } from "@clerk/nextjs";
 import {
   FileText,
   FormInput,
@@ -83,19 +83,25 @@ export default function Header() {
             </MobileNavLink>
           </div>
           <div className="pt-4 pb-3 border-t border-gray-200">
-            <div className="flex items-center px-5">
-              <div className="flex-shrink-0">
-                <UserButton />
-              </div>
-              <div className="ml-3">
-                <div className="text-base font-medium">
-                  {session?.user?.fullName}
+            <div className="mx-4 flex items-center justify-between">
+              <div className="flex items-center px-5">
+                <div className="flex-shrink-0">
+                  <UserButton />
                 </div>
-                <div className="text-sm font-medium text-muted-foreground">
-                  {session?.user?.emailAddresses[0].emailAddress}
+                <div className="ml-3">
+                  <div className="text-base font-medium">
+                    {session?.user?.fullName}
+                  </div>
+                  <div className="text-sm font-medium text-muted-foreground">
+                    {session?.user?.emailAddresses[0].emailAddress}
+                  </div>
                 </div>
               </div>
+              <Button>
+                <SignOutButton>Sign Out</SignOutButton>
+              </Button>
             </div>
+
             <div className={cn("flex justify-center container mx-auto")}>
               <div className="w-1/2 mt-4">
                 <Progress

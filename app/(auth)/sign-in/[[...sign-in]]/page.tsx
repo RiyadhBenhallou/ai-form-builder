@@ -31,7 +31,7 @@ export default function Page() {
             </p> */}
 
             <div className="flex justify-center items-center mt-8 lg:mt-12">
-              <SignIn signUpForceRedirectUrl={"/dashboard"} />
+              <SignIn forceRedirectUrl={"/dashboard"} />
             </div>
           </div>
         </main>
