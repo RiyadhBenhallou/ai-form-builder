@@ -1,4 +1,6 @@
 "use client";
+
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -8,25 +10,27 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { FormStructure, FormType, ResponseType } from "@/db/schema";
-import { Download } from "lucide-react";
-import { write, utils } from "xlsx"; // Install SheetJS: npm install xlsx
+import { Download, Calendar } from "lucide-react";
+import { write, utils } from "xlsx";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 type Form = FormType & { responses: ResponseType[] };
 
 export default function ResponseCard({ form }: { form: Form }) {
+  const [startDate, setStartDate] = useState<Date | null>(null);
   const f = JSON.parse(form.jsonForm) as FormStructure;
-  //   const handleExport = () => {
-  //     const parsedResponses: any[] = [];
-  //     responses.map((response) => {
-  //       const parsedResponse = JSON.parse(response.jsonResponse);
-  //       parsedResponses.push(parsedResponse);
-  //     });
-  //     console.log(parsedResponses);
-  //   };
 
   const handleExport = () => {
-    // Parse responses
-    const parsedResponses = form?.responses?.map((response) =>
+    // Filter responses based on the selected date
+    const filteredResponses = form?.responses?.filter((response) => {
+      if (!startDate) return true; // If no date is selected, include all responses
+      const responseDate = response.createdAt!;
+      return responseDate >= startDate;
+    });
+
+    // Parse filtered responses
+    const parsedResponses = filteredResponses.map((response) =>
       JSON.parse(response.jsonResponse)
     );
 
@@ -49,12 +53,20 @@ export default function ResponseCard({ form }: { form: Form }) {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `"${f.title}" Form Responses.xlsx`;
+    link.download = `"${f.title}" Form Responses${
+      startDate ? ` (from ${startDate.toISOString().split("T")[0]})` : ""
+    }.xlsx`;
     link.click();
 
     // Clean up
     URL.revokeObjectURL(url);
   };
+
+  const filteredResponsesCount = form?.responses?.filter((response) => {
+    if (!startDate) return true;
+    const responseDate = response.createdAt!;
+    return responseDate >= startDate;
+  }).length;
 
   return (
     <Card key={form.id} className="flex flex-col justify-between relative">
@@ -62,23 +74,35 @@ export default function ResponseCard({ form }: { form: Form }) {
         <CardTitle className="text-lg">{f.title}</CardTitle>
         <CardDescription>{f.subheading}</CardDescription>
       </CardHeader>
-      {/* <CardContent>
-                <p>Card Content</p>
-              </CardContent> */}
-      <CardFooter className="flex items-center justify-between">
-        <p className="text-sm text-muted-foreground">
-          <span className="font-bold">{form?.responses?.length}</span> Responses
-        </p>
-        <Button
-          variant={"outline"}
-          className="bg-blue-600 hover:bg-blue-700 text-white hover:text-white"
-          size={"sm"}
-          onClick={handleExport}
-          disabled={form?.responses?.length === 0}
-        >
-          <Download className="w-4 h-4 mr-2" />
-          Export
-        </Button>
+      <CardFooter className="flex flex-col items-start space-y-4">
+        <div className="flex items-center space-x-2">
+          <Calendar className="w-4 h-4" />
+          <DatePicker
+            selected={startDate}
+            onChange={(date: Date | null) => setStartDate(date)}
+            placeholderText="Select start date"
+            className="border rounded px-2 py-1 text-sm bg-white"
+          />
+        </div>
+        <div className="flex items-center justify-between w-full">
+          <p className="text-sm text-muted-foreground">
+            <span className="font-bold">{filteredResponsesCount}</span>{" "}
+            Responses
+            {startDate
+              ? ` (from ${startDate.toISOString().split("T")[0]})`
+              : " In Total"}
+          </p>
+          <Button
+            variant={"outline"}
+            className="bg-blue-600 hover:bg-blue-700 text-white hover:text-white"
+            size={"sm"}
+            onClick={handleExport}
+            disabled={filteredResponsesCount === 0}
+          >
+            <Download className="w-4 h-4 mr-2" />
+            Export
+          </Button>
+        </div>
       </CardFooter>
     </Card>
   );
