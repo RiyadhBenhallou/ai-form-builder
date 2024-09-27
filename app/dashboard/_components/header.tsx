@@ -15,23 +15,35 @@ import Link from "next/link";
 import { useContext, useEffect, useState } from "react";
 import { ProgressContext } from "../progress-provider";
 import CreateFormDialog from "./create-form-dialog";
+
 export default function Header() {
   const { session } = useSession();
   const [isOpen, setIsOpen] = useState(false);
   const { progress } = useContext(ProgressContext)!;
-
-  const toggleMenu = () => {
-    setIsOpen(!isOpen);
-  };
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
+  };
+
   if (!isMounted) {
-    return null;
+    return (
+      <div className="bg-background shadow-sm animate-pulse">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <div className="w-8 h-8 bg-gray-300 rounded"></div>
+            <div className="hidden md:block w-10 h-10 bg-gray-300 rounded-full"></div>
+            <div className="md:hidden w-6 h-6 bg-gray-300 rounded"></div>
+          </div>
+        </div>
+      </div>
+    );
   }
+
   return (
     <nav className="bg-background shadow-sm" suppressHydrationWarning>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -128,23 +140,6 @@ export default function Header() {
     </nav>
   );
 }
-
-// function NavLink({
-//   href,
-//   children,
-// }: {
-//   href: string;
-//   children: React.ReactNode;
-// }) {
-//   return (
-//     <Link
-//       href={href}
-//       className="text-muted-foreground hover:text-primary px-3 py-2 rounded-md text-sm font-medium"
-//     >
-//       {children}
-//     </Link>
-//   );
-// }
 
 function MobileNavLink({
   href,
