@@ -3,7 +3,13 @@
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
-import { FileText, MessageSquare, PlusCircle, Zap } from "lucide-react";
+import {
+  ChartBar,
+  FileText,
+  MessageSquare,
+  PlusCircle,
+  Zap,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
@@ -48,6 +54,7 @@ export default function SideNav() {
   const navItems = [
     { name: "My Forms", href: "/dashboard", icon: FileText },
     { name: "Responses", href: "/dashboard/responses", icon: MessageSquare },
+    { name: "Analytics", href: "/dashboard/analytics", icon: ChartBar },
   ];
 
   useEffect(() => {

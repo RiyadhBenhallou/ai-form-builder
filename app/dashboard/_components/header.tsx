@@ -4,6 +4,7 @@ import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import { SignOutButton, UserButton, useSession } from "@clerk/nextjs";
 import {
+  ChartBar,
   FileText,
   FormInput,
   Menu,
@@ -93,9 +94,15 @@ export default function Header() {
             >
               Responses
             </MobileNavLink>
+            <MobileNavLink
+              href="/dashboard/analytics"
+              icon={<ChartBar className="mr-3 h-5 w-5" />}
+            >
+              Analytics
+            </MobileNavLink>
           </div>
           <div className="pt-4 pb-3 border-t border-gray-200">
-            <div className="mx-4 flex items-center justify-between">
+            <div className="flex items-center justify-between flex-wrap">
               <div className="flex items-center px-5">
                 <div className="flex-shrink-0">
                   <UserButton />
@@ -109,7 +116,7 @@ export default function Header() {
                   </div>
                 </div>
               </div>
-              <Button>
+              <Button className="mr-4">
                 <SignOutButton>Sign Out</SignOutButton>
               </Button>
             </div>
