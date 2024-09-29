@@ -10,7 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { FormStructure, FormType, ResponseType } from "@/db/schema";
-import { Download, Calendar } from "lucide-react";
+import { Download, Calendar, X } from "lucide-react";
 import { write, utils } from "xlsx";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -68,6 +68,10 @@ export default function ResponseCard({ form }: { form: Form }) {
     return responseDate >= startDate;
   }).length;
 
+  const clearDateFilter = () => {
+    setStartDate(null);
+  };
+
   return (
     <Card key={form.id} className="flex flex-col justify-between relative">
       <CardHeader>
@@ -83,6 +87,16 @@ export default function ResponseCard({ form }: { form: Form }) {
             placeholderText="Select start date"
             className="border rounded px-2 py-1 text-sm bg-white"
           />
+          {startDate && (
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={clearDateFilter}
+              aria-label="Clear date filter"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          )}
         </div>
         <div className="flex items-center justify-between w-full">
           <p className="text-sm text-muted-foreground">

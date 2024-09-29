@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Select,
@@ -19,9 +20,13 @@ import {
   Title,
   Tooltip,
 } from "chart.js";
-import React, { useEffect, useState } from "react";
+import { CalendarIcon, LucidePersonStanding, X } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import { getFormsWithResponses } from "./actions";
+import EmptyState from "@/components/empty-state";
 
 ChartJS.register(
   CategoryScale,
@@ -131,6 +136,28 @@ export default function FormAnalytics() {
     return (sum / responses.length).toFixed(1);
   };
 
+  // pagintaing logic
+  const [currentPage, setCurrentPage] = useState(1);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const itemsPerPage = 5;
+
+  const filteredResponses = selectedDate
+    ? responses.filter(
+        (response) =>
+          response.createdAt.toDateString() === selectedDate.toDateString()
+      )
+    : responses;
+
+  const totalPages = Math.ceil(filteredResponses.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentResponses = filteredResponses.slice(startIndex, endIndex);
+
+  const clearDateFilter = () => {
+    setSelectedDate(null);
+    setCurrentPage(1);
+  };
+
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Form Analytics</h1>
@@ -184,12 +211,49 @@ export default function FormAnalytics() {
           </Card>
 
           <Card className="md:col-span-2 lg:col-span-3">
-            <CardHeader>
+            <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle>Response Breakdown</CardTitle>
+              <div className="relative">
+                <DatePicker
+                  selected={selectedDate}
+                  onChange={(date: any) => {
+                    setSelectedDate(date);
+                    setCurrentPage(1);
+                  }}
+                  customInput={
+                    <Button
+                      variant="outline"
+                      className="w-[240px] justify-start text-left font-normal"
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {selectedDate
+                        ? selectedDate.toLocaleDateString()
+                        : "Pick a date"}
+                    </Button>
+                  }
+                />
+                {selectedDate && (
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={clearDateFilter}
+                    aria-label="Clear date filter"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                )}
+              </div>
             </CardHeader>
             <CardContent>
+              {currentResponses.length === 0 && (
+                <EmptyState
+                  description=""
+                  title="Nothing is here..."
+                  icon={LucidePersonStanding}
+                />
+              )}
               <ul className="space-y-2">
-                {responses.map((response) => {
+                {currentResponses.map((response) => {
                   const parsedResponse = JSON.parse(response.jsonResponse);
                   return (
                     <li key={response.id} className="bg-muted p-2 rounded">
@@ -209,6 +273,29 @@ export default function FormAnalytics() {
                   );
                 })}
               </ul>
+              {totalPages > 1 && (
+                <div className="flex justify-between items-center mt-4">
+                  <Button
+                    onClick={() =>
+                      setCurrentPage((prev) => Math.max(prev - 1, 1))
+                    }
+                    disabled={currentPage === 1}
+                  >
+                    Previous
+                  </Button>
+                  <span>
+                    Page {currentPage} of {totalPages}
+                  </span>
+                  <Button
+                    onClick={() =>
+                      setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                    }
+                    disabled={currentPage === totalPages}
+                  >
+                    Next
+                  </Button>
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
