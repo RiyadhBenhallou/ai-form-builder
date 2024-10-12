@@ -21,7 +21,7 @@ export default function LandingPage() {
               FormBildr
             </span>
           </div>
-          <div className="hidden md:flex space-x-4">
+          <div className="hidden md:flex space-x-4 text-black">
             <Button variant="ghost">Features</Button>
             <Button variant="ghost">Pricing</Button>
             <Button variant="ghost">Contact</Button>
@@ -30,14 +30,14 @@ export default function LandingPage() {
                 <span className="text-gray-200">Get Started</span>
               </Button>
             ) : !session ? (
-              <>
+              <div className="text-black flex space-x-2">
                 <Button variant="outline">
                   <Link href="/sign-in">Log in</Link>
                 </Button>
                 <Button>
                   <Link href="/sign-up">Sign up</Link>
                 </Button>
-              </>
+              </div>
             ) : (
               <Button>
                 <Link href="/dashboard">Dashboard</Link>
