@@ -136,7 +136,7 @@ export default function StylesController({
       </div>
       {/* Background Color Controller */}
       <div className="w-full max-w-xs mx-auto mt-8">
-        <div className="p-2">
+        <div className="p-2 text-black">
           <h2 className="text-lg font-semibold mb-2">Choose a Gradient</h2>
           <div className="grid grid-cols-4 gap-1">
             {gradientOptions.map((gradient) => (
@@ -151,7 +151,7 @@ export default function StylesController({
             ))}
           </div>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 text-black">
           <Checkbox
             defaultChecked={form.auth!}
             onCheckedChange={async () => {

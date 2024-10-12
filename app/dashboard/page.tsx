@@ -19,9 +19,9 @@ export default async function Page() {
     where: eq(forms.userId, userId),
   });
   return (
-    <>
+    <main className="bg-white">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Dashboard</h1>
+        <h1 className="text-2xl font-bold text-black">Dashboard</h1>
         <CreateFormDialog>
           <Button
             className="bg-blue-600 text-white hover:bg-blue-700"
@@ -47,6 +47,6 @@ export default async function Page() {
           return <FormCard form={form} key={form.id} />;
         })}
       </div>
-    </>
+    </main>
   );
 }

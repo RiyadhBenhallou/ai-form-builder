@@ -33,7 +33,7 @@ export default function Header() {
 
   if (!isMounted) {
     return (
-      <div className="bg-background shadow-sm animate-pulse">
+      <div className="bg-white shadow-sm animate-pulse">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="w-8 h-8 bg-gray-300 rounded"></div>
@@ -46,7 +46,7 @@ export default function Header() {
   }
 
   return (
-    <nav className="bg-background shadow-sm" suppressHydrationWarning>
+    <nav className="bg-white shadow-sm" suppressHydrationWarning>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">

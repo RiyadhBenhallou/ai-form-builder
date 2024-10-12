@@ -159,7 +159,7 @@ export default function FormAnalytics() {
   };
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto p-4 text-black">
       <h1 className="text-2xl font-bold mb-4">Form Analytics</h1>
 
       <Select onValueChange={handleFormChange} value={selectedForm}>

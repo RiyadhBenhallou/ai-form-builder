@@ -18,7 +18,7 @@ export default async function ResponsesPage() {
   return (
     <div className="flex flex-col">
       <div className="flex flex-row justify-between mb-8">
-        <h1 className="text-2xl font-bold">Responses</h1>
+        <h1 className="text-2xl font-bold text-black">Responses</h1>
       </div>
       <div className="flex justify-center items-center">
         {userForms.length === 0 && (

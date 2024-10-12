@@ -49,12 +49,16 @@ export default function LandingPage() {
               variant="ghost"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
-              {mobileMenuOpen ? <X /> : <Menu />}
+              {mobileMenuOpen ? (
+                <X className="text-black" />
+              ) : (
+                <Menu className="text-black" />
+              )}
             </Button>
           </div>
         </nav>
         {mobileMenuOpen && (
-          <div className="mt-4 flex flex-col space-y-2">
+          <div className="mt-4 flex flex-col space-y-2 text-black">
             <Button variant="ghost">Features</Button>
             <Button variant="ghost">Pricing</Button>
             <Button variant="ghost">Contact</Button>
@@ -104,7 +108,7 @@ export default function LandingPage() {
                 <span className="text-gray-200">Get Started for Free</span>
               </Button>
             )}
-            <Button size="lg" variant="outline" className="text-lg">
+            <Button size="lg" variant="outline" className="text-lg text-black">
               Watch Demo
             </Button>
           </div>
@@ -159,7 +163,7 @@ export default function LandingPage() {
         </section>
 
         <section className="text-center">
-          <h2 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-black">
             Ready to get started?
           </h2>
           <div className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4">
@@ -194,7 +198,7 @@ function FeatureCard({
   description: string;
 }) {
   return (
-    <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 text-center">
+    <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 text-center text-black">
       <div className="flex justify-center mb-3 sm:mb-4">{icon}</div>
       <h3 className="text-lg sm:text-xl font-semibold mb-2">{title}</h3>
       <p className="text-sm sm:text-base text-gray-600">{description}</p>

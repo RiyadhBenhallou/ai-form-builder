@@ -37,9 +37,11 @@ export default function RootLayout({
           <SignedIn>
             <div className="flex flex-col min-h-screen">
               <Header />
-              <div className="flex">
+              <div className="flex bg-white">
                 <SideNav />
-                <div className="flex-1 p-6 overflow-auto">{children}</div>
+                <div className="flex-1 p-6 overflow-auto bg-white">
+                  {children}
+                </div>
               </div>
             </div>
           </SignedIn>
