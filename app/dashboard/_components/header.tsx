@@ -61,9 +61,9 @@ export default function Header() {
           <div className="md:hidden">
             <Button variant="ghost" size="icon" onClick={toggleMenu}>
               {isOpen ? (
-                <X className="h-6 w-6" />
+                <X className="h-6 w-6 text-black" />
               ) : (
-                <Menu className="h-6 w-6" />
+                <Menu className="h-6 w-6 text-black" />
               )}
             </Button>
           </div>
@@ -108,7 +108,7 @@ export default function Header() {
                   <UserButton />
                 </div>
                 <div className="ml-3">
-                  <div className="text-base font-medium">
+                  <div className="text-base text-black font-medium">
                     {session?.user?.fullName}
                   </div>
                   <div className="text-sm font-medium text-muted-foreground">

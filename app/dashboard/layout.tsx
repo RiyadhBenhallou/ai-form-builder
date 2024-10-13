@@ -35,7 +35,7 @@ export default function RootLayout({
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
           <SignedIn>
-            <div className="flex flex-col min-h-screen">
+            <div className="flex flex-col min-h-screen bg-white">
               <Header />
               <div className="flex bg-white">
                 <SideNav />

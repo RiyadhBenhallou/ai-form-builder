@@ -212,7 +212,7 @@ export default function FormAnalytics() {
 
           <Card className="md:col-span-2 lg:col-span-3">
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle>Response Breakdown</CardTitle>
+              <CardTitle className="mr-4">Response Breakdown</CardTitle>
               <div className="relative">
                 <DatePicker
                   selected={selectedDate}
