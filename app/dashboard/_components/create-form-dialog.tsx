@@ -39,7 +39,7 @@ CustomDialogProps) {
       const fullPrompt = prompt(description);
       const result = await chatSession.sendMessage(fullPrompt);
       const jsonForm = result.response.text();
-      await createForm(jsonForm, fullPrompt);
+      await createForm(jsonForm, description);
       setDescription("");
       setProgress((prevProgress) => (prevProgress ?? 0) + 1);
       setOpen(false);
