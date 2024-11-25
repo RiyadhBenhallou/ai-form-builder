@@ -137,7 +137,7 @@ export default function LandingPage() {
         </section>
 
         <section className="bg-white rounded-lg shadow-xl p-6 sm:p-8 mb-8 sm:mb-16">
-          <h2 className="text-2xl sm:text-3xl font-bold text-center mb-6 sm:mb-8">
+          <h2 className="text-2xl sm:text-3xl font-bold text-center mb-6 sm:mb-8 text-black">
             Join thousands of satisfied users
           </h2>
           <div className="grid sm:grid-cols-3 gap-6 sm:gap-8 text-center">
