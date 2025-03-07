@@ -4,7 +4,7 @@ import EmptyState from "@/components/empty-state";
 import { db } from "@/db";
 import { forms } from "@/db/schema";
 import { cn } from "@/lib/utils";
-import { auth, clerkClient } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs/server";
 import { eq } from "drizzle-orm";
 import { LucidePersonStanding, PlusCircle } from "lucide-react";
 import { unstable_noStore } from "next/cache";

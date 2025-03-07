@@ -1,136 +1,142 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import type { FormField, FormType } from "@/db/schema"
-import { cn } from "@/lib/utils"
-import { ArrowLeft, ArrowUpLeftFromSquare, Share2 } from "lucide-react"
-import { useRouter } from "next/navigation"
-import { useEffect, useRef, useState, useTransition } from "react"
-import FormUI from "./_components/form-ui"
-import StylesController from "./_components/styles-controller"
-import { getForm, updateBackground, updateForm, updateTheme } from "./actions"
-import Link from "next/link"
-import WebShare from "../../_components/web-share"
-import AddField from "./_components/add-field"
+import { Button } from "@/components/ui/button";
+import type { FormField, FormType } from "@/db/schema";
+import { cn } from "@/lib/utils";
+import { ArrowLeft, ArrowUpLeftFromSquare, Share2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState, useTransition } from "react";
+import FormUI from "./_components/form-ui";
+import StylesController from "./_components/styles-controller";
+import { getForm, updateBackground, updateForm, updateTheme } from "./actions";
+import Link from "next/link";
+import WebShare from "../../_components/web-share";
+import AddField from "./_components/add-field";
 
 export default function EditFormPage({
   params: { formId },
 }: {
-  params: { formId: string }
+  params: { formId: string };
 }) {
-  const router = useRouter()
-  const [form, setForm] = useState<FormType | undefined>()
-  const [isLoading, startTransition] = useTransition()
-  const isFirstRender = useRef(true)
-  const [theme, setTheme] = useState<string | null>()
-  const [backgroundColor, setBackgroundColor] = useState<string | null>()
+  const router = useRouter();
+  const [form, setForm] = useState<FormType | undefined>();
+  const [isLoading, startTransition] = useTransition();
+  const isFirstRender = useRef(true);
+  const [theme, setTheme] = useState<string | null>();
+  const [backgroundColor, setBackgroundColor] = useState<string | null>();
 
   useEffect(() => {
     startTransition(async () => {
-      const fetchedForm = await getForm(formId)
+      const fetchedForm = await getForm(formId);
       if (fetchedForm) {
-        setForm(fetchedForm)
-        setTheme(fetchedForm.theme)
-        setBackgroundColor(fetchedForm.backgroundColor ?? "bg-white")
+        setForm(fetchedForm);
+        setTheme(fetchedForm.theme);
+        setBackgroundColor(fetchedForm.backgroundColor ?? "bg-white");
       }
-    })
-  }, [formId])
+    });
+  }, [formId]);
 
   useEffect(() => {
     const updateFormInDatabase = async (updatedForm: FormType) => {
       try {
-        await updateForm(formId, updatedForm)
-        console.log("Form updated in database")
+        await updateForm(formId, updatedForm);
+        console.log("Form updated in database");
       } catch (error) {
-        console.error("Error updating form in database:", error)
+        console.error("Error updating form in database:", error);
       }
-    }
+    };
     if (isFirstRender.current) {
-      isFirstRender.current = false
-      return
+      isFirstRender.current = false;
+      return;
     }
-    if (!form) return
-    updateFormInDatabase(form)
-  }, [form, formId])
+    if (!form) return;
+    updateFormInDatabase(form);
+  }, [form, formId]);
 
-  const handleFieldUpdate = async (name: string, updates: Partial<FormField>) => {
+  const handleFieldUpdate = async (
+    name: string,
+    updates: Partial<FormField>
+  ) => {
     setForm((prevForm) => {
-      if (!prevForm) return prevForm
-      const parsedJsonForm = JSON.parse(prevForm.jsonForm)
+      if (!prevForm) return prevForm;
+      const parsedJsonForm = JSON.parse(prevForm.jsonForm);
       const updatedJsonForm = {
         ...parsedJsonForm,
         fields: parsedJsonForm.fields.map((field: FormField) =>
-          field.name === name ? { ...field, ...updates } : field,
+          field.name === name ? { ...field, ...updates } : field
         ),
-      }
+      };
       return {
         ...prevForm,
         jsonForm: JSON.stringify(updatedJsonForm),
-      }
-    })
-  }
+      };
+    });
+  };
 
   const handleFieldDelete = (name: string) => {
     setForm((prevForm) => {
-      if (!prevForm) return prevForm
-      const parsedJsonForm = JSON.parse(prevForm.jsonForm)
+      if (!prevForm) return prevForm;
+      const parsedJsonForm = JSON.parse(prevForm.jsonForm);
       const updatedJsonForm = {
         ...parsedJsonForm,
         fields: parsedJsonForm.fields.filter((f: FormField) => name !== f.name),
-      }
+      };
       return {
         ...prevForm,
         jsonForm: JSON.stringify(updatedJsonForm),
-      }
-    })
-  }
+      };
+    });
+  };
 
   const handleAddField = (newField: FormField) => {
     setForm((prevForm) => {
-      if (!prevForm) return prevForm
-      const parsedJsonForm = JSON.parse(prevForm.jsonForm)
+      if (!prevForm) return prevForm;
+      const parsedJsonForm = JSON.parse(prevForm.jsonForm);
       const updatedJsonForm = {
         ...parsedJsonForm,
         fields: [...parsedJsonForm.fields, newField],
-      }
+      };
       return {
         ...prevForm,
         jsonForm: JSON.stringify(updatedJsonForm),
-      }
-    })
-  }
+      };
+    });
+  };
 
   const handleReorderFields = (reorderedFields: FormField[]) => {
     setForm((prevForm) => {
-      if (!prevForm) return prevForm
-      const parsedJsonForm = JSON.parse(prevForm.jsonForm)
+      if (!prevForm) return prevForm;
+      const parsedJsonForm = JSON.parse(prevForm.jsonForm);
       const updatedJsonForm = {
         ...parsedJsonForm,
         fields: reorderedFields,
-      }
+      };
       return {
         ...prevForm,
         jsonForm: JSON.stringify(updatedJsonForm),
-      }
-    })
-  }
+      };
+    });
+  };
 
-  const handleFormMetadataUpdate = (updates: { title?: string; subheading?: string }) => {
+  const handleFormMetadataUpdate = (updates: {
+    title?: string;
+    subheading?: string;
+  }) => {
     setForm((prevForm) => {
-      if (!prevForm) return prevForm
-      const parsedJsonForm = JSON.parse(prevForm.jsonForm)
+      if (!prevForm) return prevForm;
+      const parsedJsonForm = JSON.parse(prevForm.jsonForm);
       const updatedJsonForm = {
         ...parsedJsonForm,
         ...updates,
-      }
+      };
       return {
         ...prevForm,
         jsonForm: JSON.stringify(updatedJsonForm),
-      }
-    })
-  }
+      };
+    });
+  };
 
-  const jsonForm = form?.jsonForm ? JSON.parse(form.jsonForm) : null
+  const jsonForm = form?.jsonForm ? JSON.parse(form.jsonForm) : null;
 
   return (
     <div>
@@ -140,17 +146,31 @@ export default function EditFormPage({
           size={"sm"}
           onClick={() => router.back()}
         >
-          <ArrowLeft className="group-hover:-translate-x-1 transition-all" /> Back
+          <ArrowLeft className="group-hover:-translate-x-1 transition-all" />{" "}
+          Back
         </Button>
         <div className="flex items-center gap-2">
-          <Button variant={"outline"} className="bg-white text-black group flex items-center gap-2" size={"sm"} asChild>
+          <Button
+            variant={"outline"}
+            className="bg-white text-black group flex items-center gap-2"
+            size={"sm"}
+            asChild
+          >
             <Link href={`/forms/${formId}`} target="_blank">
               <ArrowUpLeftFromSquare className="w-4 h-4" />
               Preview
             </Link>
           </Button>
-          <WebShare text={jsonForm?.subheading} title={jsonForm?.title} url={`/forms/${form?.id}`}>
-            <Button variant={"outline"} className="bg-white text-black flex items-center gap-2" size={"sm"}>
+          <WebShare
+            text={jsonForm?.subheading}
+            title={jsonForm?.title}
+            url={`/forms/${form?.id}`}
+          >
+            <Button
+              variant={"outline"}
+              className="bg-white text-black flex items-center gap-2"
+              size={"sm"}
+            >
               <Share2 className="w-4 h-4" />
               Share
             </Button>
@@ -164,12 +184,12 @@ export default function EditFormPage({
             <>
               <StylesController
                 selectTheme={async (value) => {
-                  setTheme(value)
-                  await updateTheme(formId, value)
+                  setTheme(value);
+                  await updateTheme(formId, value);
                 }}
                 changeBackground={async (value) => {
-                  setBackgroundColor(value)
-                  await updateBackground(formId, value)
+                  setBackgroundColor(value);
+                  await updateBackground(formId, value);
                 }}
                 form={form}
               />
@@ -183,7 +203,7 @@ export default function EditFormPage({
         <div
           className={cn(
             "col-span-2 bg-white py-4 px-4 md:py-10 md:px-20 rounded-md shadow-md min-h-[80vh]",
-            backgroundColor,
+            backgroundColor
           )}
         >
           {form && (
@@ -200,6 +220,5 @@ export default function EditFormPage({
         </div>
       </div>
     </div>
-  )
+  );
 }
-

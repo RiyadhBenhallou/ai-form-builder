@@ -43,7 +43,7 @@ export default function DeleteField({ field, onDelete }: DeleteFieldProps) {
         <DialogHeader>
           <DialogTitle>Delete Field</DialogTitle>
           <DialogDescription>
-            Are you sure you want to delete the "{field.label}" field? This
+            Are you sure you want to delete the &quot;{field.label}&quot; field? This
             action cannot be undone.
           </DialogDescription>
         </DialogHeader>
