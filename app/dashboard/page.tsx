@@ -4,7 +4,7 @@ import EmptyState from "@/components/empty-state";
 import { db } from "@/db";
 import { forms } from "@/db/schema";
 import { cn } from "@/lib/utils";
-import { auth } from "@clerk/nextjs/server";
+import { auth, clerkClient } from "@clerk/nextjs/server";
 import { eq } from "drizzle-orm";
 import { LucidePersonStanding, PlusCircle } from "lucide-react";
 import { unstable_noStore } from "next/cache";
@@ -18,6 +18,12 @@ export default async function Page() {
   const userForms = await db.query.forms.findMany({
     where: eq(forms.userId, userId),
   });
+  // const response = await clerkClient.users.updateUserMetadata(userId, {
+  //   privateMetadata: {
+  //     credits: 8,
+  //   },
+  // })
+  // console.log(response.privateMetadata.credits)
   return (
     <main className="bg-white">
       <div className="flex items-center justify-between">

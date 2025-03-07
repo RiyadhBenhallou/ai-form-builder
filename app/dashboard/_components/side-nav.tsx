@@ -16,12 +16,16 @@ import { useContext, useEffect, useState } from "react";
 import { getUserForms } from "../actions";
 import { ProgressContext } from "../progress-provider";
 import CreateFormDialog from "./create-form-dialog";
+import { useUser } from "@clerk/nextjs";
 
 export default function SideNav() {
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [isMounted, setIsMounted] = useState(false);
   const pathname = usePathname();
   const { progress, setProgress } = useContext(ProgressContext)!;
+  const [limit, setLimit] = useState<null | number>(null);
+  const { user } = useUser();
+  console.log(user);
 
   const [isHidden, setIsHidden] = useState(isCollapsed);
 
@@ -48,6 +52,19 @@ export default function SideNav() {
     }
     fetchForms();
   }, [setProgress]);
+
+  useEffect(() => {
+    const updateUser = async () => {
+      // const userData = await user?.update({
+      //   unsafeMetadata: {
+      //     credits: 8,
+      //   },
+      // });
+      // console.log(userData);
+      setLimit((user?.unsafeMetadata?.credits as number) || 5);
+    };
+    updateUser();
+  }, [user]);
 
   // Mock progress state (replace with actual state management in your app)
 
@@ -89,7 +106,7 @@ export default function SideNav() {
           <CreateFormDialog>
             <Button
               className="w-full bg-blue-600 text-white hover:bg-blue-700 flex justify-start"
-              disabled={(progress ?? 5) >= 5}
+              disabled={(progress ?? 5) >= limit!}
             >
               <PlusCircle className={cn("h-4 w-4", !isCollapsed && "mr-2")} />
               <span className={cn(isCollapsed && "hidden")}>Create Form</span>
@@ -114,7 +131,7 @@ export default function SideNav() {
             )}
           >
             <Progress
-              value={((progress ?? 0) / 5) * 100}
+              value={((progress ?? 0) / limit!) * 100}
               color="#2563eb"
               max={3}
               className="w-full text-blue-600"
@@ -124,7 +141,8 @@ export default function SideNav() {
                 <span>Loading...</span>
               ) : (
                 <>
-                  <span className="font-bold">{progress}</span>/5 forms created
+                  <span className="font-bold">{progress}</span>/{limit} forms
+                  created
                 </>
               )}
             </div>

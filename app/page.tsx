@@ -9,6 +9,7 @@ import { useState } from "react";
 
 export default function LandingPage() {
   const { session, isLoaded } = useSession();
+  console.log(session);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
