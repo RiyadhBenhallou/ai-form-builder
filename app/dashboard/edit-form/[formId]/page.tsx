@@ -174,7 +174,7 @@ export default function EditFormPage({
                 form={form}
               />
               <div className="mt-6 bg-card p-4 rounded-md shadow-sm">
-                <h3 className="text-lg font-medium mb-4 text-foreground">Add New Field</h3>
+                {/* <h3 className="text-lg font-medium mb-4 text-foreground">Add New Field</h3> */}
                 <AddField onAddField={handleAddField} />
               </div>
             </>
