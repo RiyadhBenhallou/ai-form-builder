@@ -1,58 +1,61 @@
 "use client";
-import { Delete } from "lucide-react";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
 
-export default function DeleteField({
-  field,
-  onDelete,
-}: {
-  field: {
-    name: string;
-    label: string;
-    placeholder?: string;
-  };
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import type { FormField } from "@/db/schema";
+import { Trash2 } from "lucide-react";
+import { useState } from "react";
+
+interface DeleteFieldProps {
+  field: FormField;
   onDelete: (name: string) => void;
-}) {
-  console.log(field);
+}
+
+export default function DeleteField({ field, onDelete }: DeleteFieldProps) {
+  const [open, setOpen] = useState(false);
+
+  const handleDelete = () => {
+    onDelete(field.name);
+    setOpen(false);
+  };
 
   return (
-    <AlertDialog>
-      <AlertDialogTrigger asChild>
-        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-          <Delete className="text-red-500 w-4 h-4" />
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8 text-red-500 hover:text-red-700 hover:bg-red-50"
+        >
+          <Trash2 className="h-4 w-4" />
+          <span className="sr-only">Delete field</span>
         </Button>
-      </AlertDialogTrigger>
-      <AlertDialogContent className="bg-white text-black">
-        <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-          <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction
-            className="bg-red-500 hover:bg-red-700 text-white"
-            onClick={() => {
-              onDelete(field.name);
-            }}
-          >
-            Yes, i&apos;m sure
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px] bg-white">
+        <DialogHeader>
+          <DialogTitle>Delete Field</DialogTitle>
+          <DialogDescription>
+            Are you sure you want to delete the "{field.label}" field? This
+            action cannot be undone.
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => setOpen(false)}>
+            Cancel
+          </Button>
+          <Button variant="destructive" onClick={handleDelete}>
+            Delete
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
