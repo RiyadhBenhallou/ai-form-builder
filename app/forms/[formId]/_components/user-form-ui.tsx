@@ -82,7 +82,7 @@ export default function UserFormUI({ form }: UserFormUIProps) {
     >
       <div
         className="w-[400px] md:w-[650px] p-6 m-6 rounded-lg shadow-md"
-        data-theme={form.theme}
+        data-theme={form.theme ?? 'light'}
       >
         <h1 className="text-2xl font-bold mb-2">{jsonSchema.title}</h1>
         <p className="mb-6">{jsonSchema.subheading}</p>

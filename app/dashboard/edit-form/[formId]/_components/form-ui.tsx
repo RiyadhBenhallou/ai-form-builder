@@ -60,7 +60,7 @@ const SortableField = ({
     <div
       ref={setNodeRef}
       style={style}
-      className="space-y-2 border border-gray-200 p-4 rounded-md relative bg-background"
+      className={cn("space-y-2 border border-gray-200 p-4 rounded-md relative bg-background")}
     >
       <div className="absolute right-2 top-2 cursor-move" {...attributes} {...listeners}>
         <MoveVertical className="h-4 w-4 text-gray-400" />
@@ -225,9 +225,10 @@ export default function FormUI({
     handleFormMetadataUpdate({ subheading })
     setEditingSubheading(false)
   }
+  console.log(formData)
 
   return (
-    <div className="w-full max-w-2xl mx-auto p-4 sm:p-6 rounded-lg shadow-md bg-white" data-theme={theme ?? "light"}>
+    <div className={cn("w-full max-w-2xl mx-auto p-4 sm:p-6 rounded-lg shadow-md")} data-theme={theme ?? "light"}>
       {/* Editable Title */}
       <div className="mb-2 group relative">
         {editingTitle ? (
@@ -325,7 +326,7 @@ export default function FormUI({
         </DndContext>
         <button
           type="submit"
-          className="w-full bg-primary text-primary-foreground hover:bg-primary/90 py-2 px-4 rounded-md text-sm sm:text-base"
+          className="w-full btn btn-primary py-2 px-4 rounded-md text-sm sm:text-base"
         >
           Submit
         </button>
