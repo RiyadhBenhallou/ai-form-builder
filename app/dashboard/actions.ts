@@ -7,7 +7,7 @@ import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-export async function createForm(jsonForm: string, prompt: string) {
+export async function createForm(jsonForm: string, description: string) {
   const { userId } = await auth();
   if (!userId) {
     throw new Error("User not authenticated");
@@ -17,7 +17,7 @@ export async function createForm(jsonForm: string, prompt: string) {
     .values({
       jsonForm,
       userId,
-      prompt,
+      prompt: description,
     })
     .returning();
   if (!createdForms) {
