@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea"
 import type { FormField, FormStructure } from "@/db/schema"
 import { cn } from "@/lib/utils"
-import { Loader2, MoveVertical } from "lucide-react"
+import { Loader2, MoveVertical, Pencil } from "lucide-react"
 import { useState } from "react"
 import DeleteField from "./delete-field"
 import EditField from "./edit-field"
@@ -23,16 +23,19 @@ import {
 } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers"
+import { Button } from "@/components/ui/button"
 
 interface FormUIProps {
   form: FormStructure | undefined
   handleFieldUpdate: (name: string, updates: Partial<FormField>) => void
   handleFieldDelete: (name: string) => void
   handleReorderFields: (reorderedFields: FormField[]) => void
+  handleFormMetadataUpdate: (updates: { title?: string; subheading?: string }) => void
   theme: string | null | undefined
   isLoading: boolean
 }
 
+// SortableField component remains the same
 const SortableField = ({
   field,
   handleInputChange,
@@ -54,14 +57,21 @@ const SortableField = ({
   }
 
   return (
-    <div ref={setNodeRef} style={style} className="space-y-2 border border-gray-200 p-4 rounded-md relative">
+    <div
+      ref={setNodeRef}
+      style={style}
+      className="space-y-2 border border-gray-200 p-4 rounded-md relative bg-background"
+    >
       <div className="absolute right-2 top-2 cursor-move" {...attributes} {...listeners}>
         <MoveVertical className="h-4 w-4 text-gray-400" />
       </div>
 
       <Label
         htmlFor={field.name}
-        className={cn("text-sm sm:text-base", field.required && "after:content-['*'] after:ml-0.5 after:text-red-500")}
+        className={cn(
+          "text-sm sm:text-base text-foreground",
+          field.required && "after:content-['*'] after:ml-0.5 after:text-red-500",
+        )}
       >
         {field.label}
       </Label>
@@ -75,7 +85,7 @@ const SortableField = ({
               placeholder={field.placeholder}
               required={field.required}
               onChange={(e) => handleInputChange(field.name, e.target.value)}
-              className="w-full"
+              className="w-full text-foreground"
             />
           )}
           {field.type === "textarea" && (
@@ -85,7 +95,7 @@ const SortableField = ({
               placeholder={field.placeholder}
               required={field.required}
               onChange={(e) => handleInputChange(field.name, e.target.value)}
-              className="w-full"
+              className="w-full text-foreground"
             />
           )}
           {field.type === "radio" && field.options && (
@@ -97,7 +107,7 @@ const SortableField = ({
               {field.options.map((option) => (
                 <div key={option.value} className="flex items-center space-x-2">
                   <RadioGroupItem value={option.value} id={`${field.name}-${option.value}`} className="radio-primary" />
-                  <Label htmlFor={`${field.name}-${option.value}`} className="text-sm">
+                  <Label htmlFor={`${field.name}-${option.value}`} className="text-sm text-foreground">
                     {option.label}
                   </Label>
                 </div>
@@ -119,7 +129,7 @@ const SortableField = ({
                       handleInputChange(field.name, newValues)
                     }}
                   />
-                  <Label htmlFor={`${field.name}-${option.value}`} className="text-sm">
+                  <Label htmlFor={`${field.name}-${option.value}`} className="text-sm text-foreground">
                     {option.label}
                   </Label>
                 </div>
@@ -128,7 +138,7 @@ const SortableField = ({
           )}
           {field.type === "select" && field.options && (
             <Select onValueChange={(value) => handleInputChange(field.name, value)} required={field.required}>
-              <SelectTrigger className="w-full">
+              <SelectTrigger className="w-full text-foreground">
                 <SelectValue placeholder="Select an option" />
               </SelectTrigger>
               <SelectContent>
@@ -155,10 +165,15 @@ export default function FormUI({
   handleFieldUpdate,
   handleFieldDelete,
   handleReorderFields,
+  handleFormMetadataUpdate,
   theme,
   isLoading,
 }: FormUIProps) {
   const [formData, setFormData] = useState<Record<string, string | string[]>>({})
+  const [editingTitle, setEditingTitle] = useState(false)
+  const [editingSubheading, setEditingSubheading] = useState(false)
+  const [title, setTitle] = useState(form?.title || "")
+  const [subheading, setSubheading] = useState(form?.subheading || "")
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -201,10 +216,93 @@ export default function FormUI({
     }
   }
 
+  const saveTitle = () => {
+    handleFormMetadataUpdate({ title })
+    setEditingTitle(false)
+  }
+
+  const saveSubheading = () => {
+    handleFormMetadataUpdate({ subheading })
+    setEditingSubheading(false)
+  }
+
   return (
-    <div className="w-full max-w-2xl mx-auto p-4 sm:p-6 rounded-lg shadow-md" data-theme={theme ?? "light"}>
-      <h1 className="text-xl sm:text-2xl font-bold mb-2">{form.title}</h1>
-      <p className="mb-6 text-sm sm:text-base">{form.subheading}</p>
+    <div className="w-full max-w-2xl mx-auto p-4 sm:p-6 rounded-lg shadow-md bg-white" data-theme={theme ?? "light"}>
+      {/* Editable Title */}
+      <div className="mb-2 group relative">
+        {editingTitle ? (
+          <div className="flex items-center gap-2">
+            <Input
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="text-xl sm:text-2xl font-bold text-foreground"
+              autoFocus
+              onKeyDown={(e) => {
+                if (e.key === "Enter") saveTitle()
+              }}
+            />
+            <Button size="sm" onClick={saveTitle}>
+              Save
+            </Button>
+          </div>
+        ) : (
+          <div className="flex items-center gap-2">
+            <h1 className="text-xl sm:text-2xl font-bold text-foreground">{form.title}</h1>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8"
+              onClick={() => {
+                setTitle(form.title)
+                setEditingTitle(true)
+              }}
+            >
+              <Pencil className="h-4 w-4" />
+              <span className="sr-only">Edit title</span>
+            </Button>
+          </div>
+        )}
+      </div>
+
+      {/* Editable Subheading */}
+      <div className="mb-6 group relative">
+        {editingSubheading ? (
+          <div className="flex items-center gap-2">
+            <Textarea
+              value={subheading}
+              onChange={(e) => setSubheading(e.target.value)}
+              className="text-sm sm:text-base text-muted-foreground"
+              autoFocus
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault()
+                  saveSubheading()
+                }
+              }}
+            />
+            <Button size="sm" onClick={saveSubheading}>
+              Save
+            </Button>
+          </div>
+        ) : (
+          <div className="flex items-center gap-2">
+            <p className="text-sm sm:text-base text-muted-foreground">{form.subheading}</p>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8"
+              onClick={() => {
+                setSubheading(form.subheading)
+                setEditingSubheading(true)
+              }}
+            >
+              <Pencil className="h-4 w-4" />
+              <span className="sr-only">Edit description</span>
+            </Button>
+          </div>
+        )}
+      </div>
+
       <form onSubmit={handleSubmit} className="space-y-6">
         <DndContext
           sensors={sensors}
@@ -225,7 +323,10 @@ export default function FormUI({
             ))}
           </SortableContext>
         </DndContext>
-        <button type="submit" className="w-full btn btn-primary text-sm sm:text-base py-2 px-4">
+        <button
+          type="submit"
+          className="w-full bg-primary text-primary-foreground hover:bg-primary/90 py-2 px-4 rounded-md text-sm sm:text-base"
+        >
           Submit
         </button>
       </form>

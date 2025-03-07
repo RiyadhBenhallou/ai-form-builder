@@ -115,6 +115,21 @@ export default function EditFormPage({
     })
   }
 
+  const handleFormMetadataUpdate = (updates: { title?: string; subheading?: string }) => {
+    setForm((prevForm) => {
+      if (!prevForm) return prevForm
+      const parsedJsonForm = JSON.parse(prevForm.jsonForm)
+      const updatedJsonForm = {
+        ...parsedJsonForm,
+        ...updates,
+      }
+      return {
+        ...prevForm,
+        jsonForm: JSON.stringify(updatedJsonForm),
+      }
+    })
+  }
+
   const jsonForm = form?.jsonForm ? JSON.parse(form.jsonForm) : null
 
   return (
@@ -158,7 +173,8 @@ export default function EditFormPage({
                 }}
                 form={form}
               />
-              <div className="mt-6">
+              <div className="mt-6 bg-card p-4 rounded-md shadow-sm">
+                <h3 className="text-lg font-medium mb-4 text-foreground">Add New Field</h3>
                 <AddField onAddField={handleAddField} />
               </div>
             </>
@@ -177,6 +193,7 @@ export default function EditFormPage({
               handleFieldUpdate={handleFieldUpdate}
               handleFieldDelete={handleFieldDelete}
               handleReorderFields={handleReorderFields}
+              handleFormMetadataUpdate={handleFormMetadataUpdate}
               theme={theme}
             />
           )}
