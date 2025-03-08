@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
-import { SignOutButton, UserButton, useSession } from "@clerk/nextjs";
+import { SignOutButton, UserButton, useSession, useUser } from "@clerk/nextjs";
 import {
   ChartBar,
   FileText,
@@ -22,10 +22,25 @@ export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const { progress } = useContext(ProgressContext)!;
   const [isMounted, setIsMounted] = useState(false);
+  const [limit, setLimit] = useState<null | number>(null);
+  const { user } = useUser();
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
+
+  useEffect(() => {
+    const updateUser = async () => {
+      // const userData = await user?.update({
+      //   unsafeMetadata: {
+      //     credits: 8,
+      //   },
+      // });
+      // console.log(userData);
+      setLimit((user?.unsafeMetadata?.credits as number) || 5);
+    };
+    updateUser();
+  }, [user]);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -76,7 +91,7 @@ export default function Header() {
             <CreateFormDialog>
               <Button
                 className="w-full bg-blue-600 text-white hover:bg-blue-700 flex justify-start"
-                disabled={(progress ?? 5) >= 5}
+                disabled={(progress ?? 5) >= limit!}
               >
                 <PlusCircle className={cn("h-5 w-5 mr-3")} />
                 Create Form
@@ -124,7 +139,7 @@ export default function Header() {
             <div className={cn("flex justify-center container mx-auto")}>
               <div className="w-1/2 mt-4">
                 <Progress
-                  value={((progress ?? 0) / 5) * 100}
+                  value={((progress ?? 0) / limit!) * 100}
                   color="#2563eb"
                   max={3}
                   className="w-full text-blue-600"
@@ -134,8 +149,8 @@ export default function Header() {
                     <span>Loading...</span>
                   ) : (
                     <>
-                      <span className="font-bold">{progress}</span>/5 forms
-                      created
+                      <span className="font-bold">{progress}</span>/{limit}{" "}
+                      forms created
                     </>
                   )}
                 </div>

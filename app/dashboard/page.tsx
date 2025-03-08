@@ -4,7 +4,7 @@ import EmptyState from "@/components/empty-state";
 import { db } from "@/db";
 import { forms } from "@/db/schema";
 import { cn } from "@/lib/utils";
-import { auth } from "@clerk/nextjs/server";
+import { auth, clerkClient } from "@clerk/nextjs/server";
 import { eq } from "drizzle-orm";
 import { LucidePersonStanding, PlusCircle } from "lucide-react";
 import { unstable_noStore } from "next/cache";
@@ -23,7 +23,8 @@ export default async function Page() {
   //     credits: 8,
   //   },
   // })
-  // console.log(response.privateMetadata.credits)
+  const user = await clerkClient().users.getUser(userId);
+  const limit = user.unsafeMetadata.credits as number;
   return (
     <main className="bg-white">
       <div className="flex items-center justify-between">
@@ -31,7 +32,7 @@ export default async function Page() {
         <CreateFormDialog>
           <Button
             className="bg-blue-600 text-white hover:bg-blue-700"
-            disabled={userForms.length >= 5}
+            disabled={userForms.length >= limit}
           >
             <PlusCircle className={cn("h-5 w-5 mr-3")} />
             Create Form
